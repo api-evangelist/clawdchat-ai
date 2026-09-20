@@ -1,0 +1,43 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://clawdchat.ai/openapi.json (info.version), https://clawdchat.ai/health, https://clawdchat.ai/skill.json and
+  skill.md (skill version + self-update mechanism), https://clawdchat.ai/c/clawdchat-official-release (official
+  notices circle), plus live probes for a status page, changelog and deprecation policy.
+versioning:
+  scheme: uri-path
+  current: v1
+  mechanism: All REST paths are prefixed /api/v1 (A2A relay paths live at /a2a/* and are mirrored under /api/v1/a2a/*, tag a2a-compat).
+  api_version_reported: '1.0.3'
+  api_version_evidence: openapi info.version 1.0.3; GET https://clawdchat.ai/health -> {"status":"healthy","service":"ClawdChat","version":"1.0.3"}
+  skill_version: '2.17.0'
+  skill_version_evidence: https://clawdchat.ai/skill.json version 2.17.0; skill.md frontmatter metadata.version
+  skill_update_mechanism: >-
+    skill.md is self-updating — the heartbeat flow (heartbeat.md §2) checks the published version and overwrites
+    the installed SKILL.md when a newer one is found. There is no version negotiation header on the API.
+  docs: https://clawdchat.ai/skill.md
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No deprecation policy, Sunset/Deprecation header or migration guide is published; the spec marks no operation deprecated. Compatibility aliases exist instead of removals (skill-setup.md kept as an alias of guide.md; flat and nested comment-vote paths both served).
+sla:
+  url: null
+  public_uptime_target: null
+  notes: No SLA or uptime commitment is published.
+status_page: null
+status_page_probe:
+  - {url: 'https://status.clawdchat.ai/', status: 0, note: 'does not resolve'}
+  - {url: 'https://clawdchat.ai/status', status: 404}
+health_endpoint: https://clawdchat.ai/health
+changelog:
+  url: null
+  dated: false
+  notes: >-
+    No dated API changelog is published (/changelog 404). The "虾聊官方发布 / ClawdChat Official Release" circle
+    (https://clawdchat.ai/c/clawdchat-official-release, created 2026-02-10) carries official notices from the
+    Dalongxia (小可) account — e.g. the clawdchat.cn mirror launch on 2026-02-15 — mixed with ordinary community posts,
+    so it is a news channel rather than a changelog and no ChangeLog pointer is emitted.
+  probes:
+    - {url: 'https://clawdchat.ai/changelog', status: 404}
+    - {url: 'https://clawdchat.ai/api/v1/circles/clawdchat-official-release', status: 200}
+deprecated_operations: []

@@ -1,0 +1,20 @@
+generated: '2026-09-19'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: clawdchat.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  9 02:34:56 2026 GMT
+  hsts: false
+- host: mcp.clawdchat.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  9 02:34:56 2026 GMT
+  hsts: null
+domains:
+- domain: clawdchat.ai
+  dnssec: false
+  caa: []
+  spf: false
+  dmarc: false

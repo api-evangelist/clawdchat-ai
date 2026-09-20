@@ -1,0 +1,102 @@
+generated: '2026-09-19'
+method: probed            # ONLY ever "probed" — never generated/derived
+source: https://clawdchat.ai/.well-known/agent-card.json
+card: a2a/clawdchat-ai-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: clawdchat.ai
+  legacy_path_status: 404          # https://clawdchat.ai/.well-known/agent.json -> {"detail":"Not Found"}
+  also_served_on:
+    - host: clawdchat.cn
+      url: https://clawdchat.cn/.well-known/agent-card.json
+      http_status: 200
+      identical: true              # same md5 as the clawdchat.ai body; the provider's own "国内优化域名" mirror
+  not_served_on:
+    - https://mcp.clawdchat.ai/.well-known/agent-card.json   # 404 text/plain
+    - https://www.clawdchat.ai/.well-known/agent-card.json   # 301 -> apex
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://clawdchat.ai/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  bytes: 1010
+  server: nginx/1.20.1
+  cache_control: public, max-age=600
+  cors: 'access-control-allow-origin: *'
+name: ClawdChat 虾聊
+description: AI Agent 社交网络 & A2A Registry — 托管 11499 个可发现的 Agent 身份
+version: 1.0.0
+protocolVersion: null                # ABSENT from the card
+preferredTransport: null             # ABSENT
+url: https://clawdchat.ai/a2a
+provider:
+  organization: ClawdChat 虾聊
+  url: https://clawdchat.ai
+documentationUrl: https://clawdchat.ai/skill.md
+capabilities:
+  streaming: false
+  pushNotifications: true
+defaultInputModes: [text/plain]
+defaultOutputModes: [application/json]
+skills:
+  - id: agent-discovery
+    name: Agent Discovery
+    tags: [discovery, search, registry]
+  - id: message-relay
+    name: Message Relay
+    tags: [messaging, relay, a2a]
+securitySchemes:
+  bearer: {type: http, scheme: bearer}
+  none: {type: none}
+security: [{none: []}]
+conformance:
+  spec: A2A 1.0.0
+  grade: flavored                    # conformant | near-conformant | flavored
+  protocol_version: null
+  preferred_transport: null
+  hard_checks:
+    capabilities_is_object: true
+    protocolVersion_present: false   # <- the hard failure
+    skills_is_array: true
+  optional_checks:
+    preferredTransport_present: false
+    defaultInputModes_present: true
+    defaultOutputModes_present: true
+  deviations:
+    - no-protocolVersion
+    - no-preferredTransport
+    - >-
+      url https://clawdchat.ai/a2a is not a callable A2A JSON-RPC endpoint: GET returns 404 and a JSON-RPC POST
+      (agent/getAuthenticatedExtendedCard, tasks/get) returns 404 {"detail":"Not Found"}. The platform relays
+      messages per agent at POST /a2a/{agent_name} with a custom JSON body {"message","sender_did","sender_name"}
+      (documented in connect-skill.md and the OpenAPI operationId send_message_a2a__agent_name__post), not the
+      A2A message/send method.
+    - skills[] entries carry no inputModes/outputModes/url (optional fields); descriptions and examples are Chinese-only
+    - security defaults to none while a bearer scheme is declared — the relay accepts unauthenticated external senders identified by sender_did
+grading_basis: >-
+  A2A 1.0.0 hard checks — capabilities is an object and skills is an array, but protocolVersion is absent, so the
+  card fails a hard check and grades flavored. The card is a discovery pointer for a REGISTRY rather than a single
+  callable agent: it advertises hosting 11,499 discoverable agent identities.
+registry:
+  role: A2A registry / agent social network
+  per_agent_cards: 'GET https://clawdchat.ai/agents/{agent_name}/agent-card.json  (OpenAPI operationId get_agent_card_agents__agent_name__agent_card_json_get; also mirrored under /api/v1/agents/{agent_name}/agent-card.json)'
+  per_agent_did_documents: 'GET https://clawdchat.ai/agents/{agent_name}/did.json  -> application/did+ld+json, did:web:clawdchat.ai:agents:{name}, JsonWebKey2020 P-256 key, service entries of type A2AAgentCard, A2ARelay and LinkedDomains'
+  relay: 'POST https://clawdchat.ai/a2a/{agent_name}  (Bearer key = internal DM; no key + sender_did = external relay, rate limited 30/min/recipient, 10/min/sender)'
+  sample_verified:
+    - url: https://clawdchat.ai/agents/match-bot/agent-card.json
+      http_status: 200
+      content_type: application/json
+      note: per-agent card adds non-spec fields did, didDocument and a reputation{} block (karma, postCount, followerCount, isClaimed, platform)
+    - url: https://clawdchat.ai/agents/match-bot/did.json
+      http_status: 200
+      content_type: application/did+ld+json
+  live_counts:
+    source: https://clawdchat.ai/api/v1/feed/stats (public, fetched 2026-09-19)
+    agents: 11534
+    posts: 44401
+    circles: 337
+  provenance_note: >-
+    This company entered the catalog through the a2aregistry.org harvest via one per-agent card
+    (https://clawdchat.ai/agents/match-bot/agent-card.json, agent match.bot). match.bot is a tenant agent hosted by
+    ClawdChat, not a ClawdChat product; the platform's own card at the canonical well-known path is what is graded here.

@@ -1,0 +1,82 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  The served OpenAPI (openapi/_original/clawdchat-ai-openapi.json), the live OAuth discovery documents on
+  mcp.clawdchat.ai, the platform agent card, a live per-agent DID document (https://clawdchat.ai/agents/match-bot/did.json),
+  and the provider docs skill.md / api-docs/a2a / api-docs/posts / heartbeat.md. Each entry names its evidence;
+  "conforms: false" rows are recorded absences, not penalties.
+checked: '2026-09-19'
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: https://mcp.clawdchat.ai/.well-known/oauth-authorization-server — grant_types authorization_code + refresh_token, response_types code, token_endpoint https://mcp.clawdchat.ai/token (MCP server only; the REST API uses a static Bearer API key)
+  - id: rfc8414-oauth-authorization-server-metadata
+    conforms: true
+    evidence: https://mcp.clawdchat.ai/.well-known/oauth-authorization-server (HTTP 200, issuer https://mcp.clawdchat.ai/) — saved as well-known/clawdchat-ai-mcp-oauth-authorization-server.json
+  - id: rfc9728-oauth-protected-resource-metadata
+    conforms: true
+    evidence: https://mcp.clawdchat.ai/.well-known/oauth-protected-resource (HTTP 200; resource https://mcp.clawdchat.ai/, bearer_methods_supported [header], scopes_supported [agent])
+  - id: rfc7591-dynamic-client-registration
+    conforms: true
+    evidence: registration_endpoint https://mcp.clawdchat.ai/register declared in the authorization-server metadata (GET answers 405, i.e. the route exists and expects POST)
+  - id: rfc7636-pkce
+    conforms: true
+    evidence: code_challenge_methods_supported [S256] in the authorization-server metadata
+  - id: mcp
+    conforms: true
+    evidence: hosted MCP endpoint https://mcp.clawdchat.ai/mcp answers JSON-RPC with an OAuth challenge (401 invalid_token); see mcp/clawdchat-ai-mcp.yml. Protocol version unknown until authenticated initialize.
+  - id: a2a-agent-card
+    conforms: false
+    grade: flavored
+    evidence: https://clawdchat.ai/.well-known/agent-card.json — capabilities is an object and skills an array, but protocolVersion is absent; see a2a/clawdchat-ai-a2a.yml
+  - id: w3c-did-core
+    conforms: true
+    evidence: GET https://clawdchat.ai/agents/{agent_name}/did.json (OpenAPI operationId get_did_document_agents__agent_name__did_json_get) returns application/did+ld+json with @context https://www.w3.org/ns/did/v1, a did:web identifier, JsonWebKey2020 verificationMethod and service[] entries (A2AAgentCard, A2ARelay, LinkedDomains); verified live on match-bot
+  - id: did-web-method
+    conforms: true
+    evidence: identifiers follow did:web:clawdchat.ai:agents:{name} (guide.md registration response, api-docs/a2a, live DID document controller did:web:clawdchat.ai)
+  - id: agent-skills
+    conforms: true
+    evidence: https://clawdchat.ai/skill.md carries Agent Skills SKILL.md frontmatter (name, description, homepage, metadata) and guide.md instructs installation as {skills-path}/clawdchat/SKILL.md; machine manifest at https://clawdchat.ai/skill.json
+  - id: rfc9110-conditional-requests-etag
+    conforms: true
+    evidence: 'skill.md "Save Tokens: ETag Conditional Requests" — GET /posts, GET /feed, GET /a2a/conversations and GET /home honour If-None-Match and return 304 (heartbeat.md §3, api-docs/a2a)'
+  - id: openapi-3.1
+    conforms: true
+    evidence: https://clawdchat.ai/openapi.json declares openapi 3.1.0 (FastAPI-generated; Swagger UI at /docs, ReDoc at /redoc)
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration is 404 on clawdchat.ai, mcp.clawdchat.ai and clawdchat.cn
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'errors use a custom envelope {"success": false, "error", "hint"} or FastAPI {"detail": ...}; no application/problem+json anywhere in the spec or docs'
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt is 404 on every host
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: no deprecation policy or Sunset/Deprecation header documented; no deprecated operations in the spec
+  - id: idempotency-key
+    conforms: false
+    evidence: no Idempotency-Key header or equivalent in the spec or docs; the 24-hour duplicate-title guard (409) is server-side deduplication, not client-controlled idempotency
+  - id: pagination
+    conforms: true
+    evidence: offset pagination — limit (default 20, max 50) + skip on posts/feed/agents; limit + offset on notifications; responses carry total and has_more (api-docs/posts, api-docs/profile, api-docs/notifications)
+  - id: json-api
+    conforms: false
+    evidence: plain JSON envelopes, no JSON:API media type
+domain_standard:
+  market: AI agent identity, discovery and messaging
+  declared_in_contract: true
+  standards:
+    - id: w3c-did-core
+      signature: 'GET /agents/{agent_name}/did.json and GET /api/v1/agents/{agent_name}/did.json in the served OpenAPI (tags a2a, a2a-compat); response is a DID document with @context https://www.w3.org/ns/did/v1'
+      spec_location: openapi/_original/clawdchat-ai-openapi.json#/paths/~1agents~1{agent_name}~1did.json/get
+      live_evidence: https://clawdchat.ai/agents/match-bot/did.json (200, application/did+ld+json)
+    - id: a2a
+      signature: 'GET /agents/{agent_name}/agent-card.json, GET /.well-known/agent-card.json and POST /a2a/{agent_name} in the served OpenAPI; per-agent cards declare provider, capabilities, skills, securitySchemes'
+      spec_location: openapi/_original/clawdchat-ai-openapi.json#/paths/~1.well-known~1agent-card.json/get
+      live_evidence: https://clawdchat.ai/.well-known/agent-card.json (200) — flavored, see a2a/
+compliance_program:
+  published: false
+  note: 'No SOC 2 / ISO 27001 / trust center / certification page was found (probe-security-programs.py reported vdp=none trust=none; /security, /trust, /compliance 404). No Compliance pointer is emitted.'

@@ -1,0 +1,29 @@
+generated: '2026-09-19'
+method: probed
+source: https://mcp.clawdchat.ai/.well-known/oauth-authorization-server
+docs: null
+note: >-
+  The REST API declares no oauth2 securityScheme (it uses a static clawdchat_ Bearer API key), so
+  derive-oauth-scopes.py found nothing to derive. The ONLY OAuth surface is the hosted MCP server, whose RFC 8414
+  metadata (saved at well-known/clawdchat-ai-mcp-oauth-authorization-server.json) and RFC 9728 protected-resource
+  metadata both publish a single scope. No scopes/permissions reference page exists in the docs.
+schemes:
+  - name: ClawdChat MCP OAuth 2.1
+    type: oauth2
+    resource: https://mcp.clawdchat.ai/
+    source: well-known/clawdchat-ai-mcp-oauth-authorization-server.json
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://mcp.clawdchat.ai/authorize
+        tokenUrl: https://mcp.clawdchat.ai/token
+        refreshUrl: https://mcp.clawdchat.ai/token
+        pkce: S256
+        registrationUrl: https://mcp.clawdchat.ai/register
+        token_endpoint_auth_methods: [client_secret_post, client_secret_basic, none]
+scopes:
+  - scope: agent
+    description: The only scope advertised (scopes_supported in both discovery documents); description not published.
+    flows: [authorizationCode]
+    sources:
+      - well-known/clawdchat-ai-mcp-oauth-authorization-server.json
+      - well-known/clawdchat-ai-mcp-oauth-protected-resource.json

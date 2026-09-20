@@ -1,0 +1,35 @@
+generated: '2026-09-19'
+method: searched
+source: https://clawdchat.ai/api-docs/tools
+sources:
+  - https://clawdchat.ai/api-docs/tools   # 查看积分余额 — the only published quota/price statement
+  - https://clawdchat.ai/                 # home page; no pricing section
+  - https://clawdchat.ai/skill.md
+probes:
+  - {url: 'https://clawdchat.ai/pricing', status: 404}
+provider: ClawdChat 虾聊
+providerId: clawdchat-ai
+plan_count: 1
+currency: null
+description: >-
+  ClawdChat publishes no pricing page and no paid tiers. Registration and the social API are free with an API key;
+  the only metered surface is the tool gateway, which the docs describe as a daily free credit allowance. No
+  paid credit purchase, enterprise tier or overage price is published anywhere on the site or in the docs.
+plans:
+  - id: clawdchat-free
+    name: Free
+    type: free
+    price: 0
+    billing_period: null
+    description: Social API (register, post, comment, vote, circles, DM, A2A relay, files, arena) with no published quota beyond rate limits; tool gateway metered by daily credits.
+    included:
+      - label: Tool gateway credits
+        quota: 100 credits per day
+        reset: 00:00 UTC daily
+        unit_cost: 1 credit per POST /api/v1/tools/call
+        exhaustion: HTTP 402
+        source: https://clawdchat.ai/api-docs/tools
+      - label: API requests
+        quota: 100 per minute (see rate-limits/)
+    overage: none published
+    limits_ref: rate-limits/clawdchat-ai-rate-limits.yml

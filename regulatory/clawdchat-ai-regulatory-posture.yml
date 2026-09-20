@@ -1,0 +1,57 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: >-
+  Artifacts harvested this run (well-known/, security/, lifecycle/, conformance/ — none carries a regulatory signal),
+  the provider's only published legal page https://clawdchat.ai/privacy (最后更新 2026年2月1日), and live probes of the
+  conventional paths listed under probes[]. The docs site (skill.md, api-docs/*) was searched for data residency,
+  export and age signals.
+checked: '2026-09-19'
+harvest_only: true
+harvest_only_note: >-
+  This file records WHAT ClawdChat publishes. It does not decide which regimes reach the company — that is the Kin
+  Score regime map's job, not this artifact's.
+summary: >-
+  One signal. The privacy policy enumerates data-subject rights (access, correction, deletion, export) and names a
+  contact address (privacy@clawdchat.ai), which is a published request route even though it is an email channel
+  rather than a form or API. Nothing else is published: no terms of service page at all, no subprocessor table
+  (the policy says only "third parties such as cloud service providers"), no DPA, no accessibility statement, no
+  SBOM, no transparency report, no data-residency statement (the .cn mirror is described as a connectivity
+  optimisation, not residency), no incident-notification commitment, no GPC statement. The policy's line that the
+  service "does not knowingly collect personal information from children under 13" is a COPPA-style disclaimer,
+  not an age-assurance mechanism, and is not recorded as one.
+signals:
+  data_subject_request:
+    present: true
+    pointer_type: DataSubjectRequest
+    url: https://clawdchat.ai/privacy
+    rights_stated: [访问 (access), 更正 (correction), 删除 (deletion — "需通过客服", via customer service), 导出 (export)]
+    channel: privacy@clawdchat.ai
+    location: 隐私政策 §7 您的权利; §11 联系我们
+    probed: {url: 'https://clawdchat.ai/privacy', status: 200}
+    substance_basis: 'An enumerated rights list plus a named contact for exercising them — a request route, not a marketing mention. Recorded with the caveat that it is email-only; there is no request form, portal or API.'
+probes:
+  - {url: 'https://clawdchat.ai/privacy', status: 200}
+  - {url: 'https://clawdchat.ai/terms', status: 404}
+  - {url: 'https://clawdchat.ai/legal/terms', status: 404}
+  - {url: 'https://clawdchat.ai/terms-of-service', status: 404}
+  - {url: 'https://clawdchat.ai/accessibility', status: 404}
+  - {url: 'https://clawdchat.ai/legal/subprocessors', status: 404}
+  - {url: 'https://clawdchat.ai/legal/dpa', status: 404}
+  - {url: 'https://clawdchat.ai/transparency', status: 404}
+  - {url: 'https://clawdchat.ai/security', status: 404}
+  - {url: 'https://clawdchat.ai/.well-known/security.txt', status: 404}
+absent:
+  - sbom
+  - support_lifetime
+  - accessibility_conformance
+  - training_data_summary
+  - ai_transparency
+  - global_privacy_control
+  - subprocessors
+  - data_residency
+  - incident_notification
+  - age_assurance
+  - notice_and_action
+  - transparency_report
+  - exit_assistance

@@ -1,0 +1,75 @@
+generated: '2026-09-19'
+method: probed
+status: published
+source: https://mcp.clawdchat.ai/mcp
+checked: '2026-09-19'
+summary: >-
+  ClawdChat runs a hosted remote MCP server at https://mcp.clawdchat.ai/mcp, advertised on the home page as
+  "MCP 接入". It is OAuth 2.1-gated: an anonymous JSON-RPC tools/list returns HTTP 401
+  {"error":"invalid_token","error_description":"Authentication required"}. The host publishes RFC 9728
+  protected-resource metadata and RFC 8414 authorization-server metadata (authorization_code + refresh_token, PKCE
+  S256, dynamic client registration at /register, scope "agent"), so a compliant MCP client can discover the
+  authorization server and obtain a token without out-of-band setup — but the tool list and inputSchemas are only
+  readable after that authorization. No stdio/npx package is published. Recorded as observed; nothing below is a
+  vendor claim we could not check.
+deployment:
+  mode: remote
+  endpoint: https://mcp.clawdchat.ai/mcp
+  install: null
+  package: null
+  auth: oauth
+  verified: probed
+  probe:
+    method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    accept: application/json, text/event-stream
+    status: 401
+    body: '{"error": "invalid_token", "error_description": "Authentication required"}'
+    content_type: application/json
+    credentials_sent: none
+    checked: '2026-09-19'
+    other_paths:
+      - {url: 'https://mcp.clawdchat.ai/', status: 404, note: 'text/plain "Not Found"'}
+      - {url: 'https://mcp.clawdchat.ai/sse', status: 404}
+      - {url: 'https://mcp.clawdchat.ai/.well-known/oauth-protected-resource', status: 200, file: well-known/clawdchat-ai-mcp-oauth-protected-resource.json}
+      - {url: 'https://mcp.clawdchat.ai/.well-known/oauth-authorization-server', status: 200, file: well-known/clawdchat-ai-mcp-oauth-authorization-server.json}
+      - {url: 'https://mcp.clawdchat.ai/.well-known/openid-configuration', status: 404}
+      - {url: 'https://clawdchat.ai/mcp', status: 404, note: 'Next.js 404 page on the apex host — the MCP surface lives only on mcp.clawdchat.ai'}
+  install_note: >-
+    Remote-only. An agent can reach the endpoint right now, but must complete the OAuth 2.1 authorization-code
+    flow (with PKCE) first; the server supports dynamic client registration so no pre-provisioned client id is needed.
+server:
+  name: ClawdChat MCP
+  transport: streamable-http (inferred from the /mcp path and the 401 JSON-RPC handling; not confirmed by an initialize response)
+  url: https://mcp.clawdchat.ai/mcp
+  protocol_version: null           # initialize is gated; unknown
+auth:
+  methods: [oauth2]
+  oauth2:
+    resource: https://mcp.clawdchat.ai/
+    authorization_server: https://mcp.clawdchat.ai/
+    authorization_endpoint: https://mcp.clawdchat.ai/authorize
+    token_endpoint: https://mcp.clawdchat.ai/token
+    registration_endpoint: https://mcp.clawdchat.ai/register
+    scopes_supported: [agent]
+    response_types: [code]
+    grant_types: [authorization_code, refresh_token]
+    token_endpoint_auth_methods: [client_secret_post, client_secret_basic, none]
+    pkce: S256
+    bearer_methods: [header]
+    discovery:
+      protected_resource: well-known/clawdchat-ai-mcp-oauth-protected-resource.json
+      authorization_server: well-known/clawdchat-ai-mcp-oauth-authorization-server.json
+tool_count: null                    # gated — tools/list requires an OAuth token
+tools: []
+tools_note: >-
+  Not derivable honestly. skill.md (the provider's agent-facing documentation) describes only the REST API and
+  never lists MCP tools, so there is no published name list to fall back on. The REST "tool gateway"
+  (GET /api/v1/tools/search, POST /api/v1/tools/call) proxies 3,756 THIRD-PARTY MCP tools across 218 servers
+  (public GET /api/v1/tools/stats, 2026-09-19); those belong to other MCP servers reached through ClawdChat and are
+  not this server's tools. See mcp/clawdchat-ai-tool-crosswalk.yml for the REST surface an authenticated tools/list
+  would be bound against.
+related:
+  openapi: openapi/clawdchat-ai-openapi.yml
+  crosswalk: mcp/clawdchat-ai-tool-crosswalk.yml
+  scopes: scopes/clawdchat-ai-scopes.yml
+  authentication: authentication/clawdchat-ai-authentication.yml

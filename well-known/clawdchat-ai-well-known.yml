@@ -1,0 +1,172 @@
+generated: '2026-09-19'
+method: probed
+source: live probes of the named /.well-known/ path list on every ClawdChat host (apex, www, MCP host, .cn mirror)
+checked: '2026-09-19'
+summary: >-
+  Three real documents are served. mcp.clawdchat.ai serves RFC 9728 protected-resource metadata and RFC 8414
+  authorization-server metadata (the MCP server's OAuth 2.1 discovery pair), and clawdchat.ai serves an A2A Agent
+  Card at the canonical /.well-known/agent-card.json (mirrored byte-for-byte on clawdchat.cn). Nothing else is
+  served anywhere: no security.txt, no OIDC discovery, no api-catalog, no ai-plugin.json, no AAuth resource
+  document, no UCP/ACP, and no apis.json index at any well-known or domain-root path. www.clawdchat.ai 301s every
+  path to the apex and is recorded as such.
+pointer_basis: >-
+  WellKnown emitted on the strength of the two OAuth discovery documents on mcp.clawdchat.ai and the agent card on
+  clawdchat.ai. SecurityTxt NOT emitted — /.well-known/security.txt is 404 on every host. The agent card is
+  registered separately as AgentCard via a2a/clawdchat-ai-a2a.yml.
+false_positive_watch: >-
+  The apex host is a FastAPI application: unknown paths return a 22-byte application/json {"detail":"Not Found"}
+  with a real 404, and unknown page routes return a 14.9 KB Next.js 404 page, also with a real 404 — there is no
+  catch-all 200, so a 200 here is a served document. mcp.clawdchat.ai returns a 9-byte text/plain "Not Found" 404.
+  A negative-control path (/.well-known/clawdchat-ai-negative-control-9c1e4d7a.json) returned 404 on clawdchat.ai,
+  mcp.clawdchat.ai and clawdchat.cn, so no host echoes paths.
+path_echo_control: passed
+hit_count: 4
+hosts:
+  - host: https://clawdchat.ai
+    role: website + API host (FastAPI at the apex; base https://clawdchat.ai/api/v1)
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/oauth-protected-resource/mcp
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/ucp.json
+        status: 404
+      - path: /.well-known/acp.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
+      - path: /.well-known/apis.json
+        status: 404
+      - path: /apis.json
+        status: 404
+      - path: /apis.yml
+        status: 404
+      - path: /.well-known/agent-card.json          # A2A 1.0.0 canonical path
+        status: 200
+        file: clawdchat-ai-agent-card.json
+        content_type: application/json
+        bytes: 1010
+        note: graded in a2a/clawdchat-ai-a2a.yml (flavored — no protocolVersion)
+      - path: /.well-known/agent.json               # pre-0.3 legacy path
+        status: 404
+      - path: /.well-known/clawdchat-ai-negative-control-9c1e4d7a.json
+        status: 404
+        control: true
+  - host: https://www.clawdchat.ai
+    role: redirect host
+    documents:
+      - path: /.well-known/security.txt
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/security.txt
+      - path: /.well-known/openid-configuration
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/openid-configuration
+      - path: /.well-known/oauth-authorization-server
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/oauth-authorization-server
+      - path: /.well-known/oauth-protected-resource
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/oauth-protected-resource
+      - path: /.well-known/api-catalog
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/api-catalog
+      - path: /.well-known/ai-plugin.json
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/ai-plugin.json
+      - path: /.well-known/agent-card.json
+        status: 301
+        redirect: https://clawdchat.ai/.well-known/agent-card.json
+  - host: https://mcp.clawdchat.ai
+    role: MCP server host (resource server + authorization server for https://mcp.clawdchat.ai/mcp)
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server   # RFC 8414
+        status: 200
+        file: clawdchat-ai-mcp-oauth-authorization-server.json
+        content_type: application/json
+        bytes: 474
+        issuer: https://mcp.clawdchat.ai/
+        note: authorization_code + refresh_token, PKCE S256, registration_endpoint /register, scopes_supported [agent]
+      - path: /.well-known/oauth-protected-resource     # RFC 9728
+        status: 200
+        file: clawdchat-ai-mcp-oauth-protected-resource.json
+        content_type: application/json
+        bytes: 161
+        resource: https://mcp.clawdchat.ai/
+        authorization_servers: [https://mcp.clawdchat.ai/]
+      - path: /.well-known/oauth-protected-resource/mcp
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/ucp.json
+        status: 404
+      - path: /.well-known/acp.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
+      - path: /.well-known/apis.json
+        status: 404
+      - path: /apis.json
+        status: 404
+      - path: /apis.yml
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/clawdchat-ai-negative-control-9c1e4d7a.json
+        status: 404
+        control: true
+  - host: https://clawdchat.cn
+    role: provider-operated mainland-China mirror ("国内优化域名", announced 2026-02-15); serves the same openapi.json and agent card
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/ucp.json
+        status: 404
+      - path: /.well-known/acp.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
+      - path: /.well-known/apis.json
+        status: 404
+      - path: /apis.json
+        status: 404
+      - path: /apis.yml
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 200
+        file: clawdchat-ai-agent-card.json
+        content_type: application/json
+        bytes: 1010
+        note: identical md5 to the clawdchat.ai card; not saved twice
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/clawdchat-ai-negative-control-9c1e4d7a.json
+        status: 404
+        control: true
+authorization_servers_followed:
+  - https://mcp.clawdchat.ai/   # named by the protected-resource document; same host, already probed above

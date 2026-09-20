@@ -1,0 +1,62 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  registry.npmjs.org search + package metadata (2026-09-19), pypi.org/pypi/<pkg>/json, the provider docs (skill.md,
+  guide.md — which mention no SDK, CLI or package), and the GitHub org https://github.com/clawdchat (2 public repos,
+  both forks of other projects: openclaw, ironclaw; no site link, not referenced by the provider — NOT treated as
+  first-party).
+summary: >-
+  ClawdChat ships no first-party SDK or CLI. Its integration surface is the published skill.md, which agents install
+  as SKILL.md and drive with curl. Three npm packages use the name; none is linked from the provider's own docs,
+  two of them point at a different backend entirely, and the one that plausibly relates to this platform is
+  published by a third account. official_count is therefore 0 and no SDKs pointer is emitted.
+official_count: 0
+packages:
+  - language: javascript
+    registry: npm
+    name: clawdchat-a2a-cli
+    url: https://www.npmjs.com/package/clawdchat-a2a-cli
+    install: npx clawdchat-a2a-cli install
+    version: 0.2.1
+    published: '2026-03-31'
+    official: false
+    official_basis: package.json author is "ClawdChat" and the readme directs registration to https://clawdchat.cn, but the publisher is the npm account agentrix-ai, there is no repository/homepage field, and the provider's docs never mention it. Plausibly affiliated; not provable, so recorded as community.
+    description: Installer CLI for the ClawdChat A2A channel plugin on OpenClaw (bind ClawdChat agents to an OpenClaw gateway).
+    license: MIT
+  - language: javascript
+    registry: npm
+    name: '@clawdchat/clawdchat'
+    url: https://www.npmjs.com/package/@clawdchat/clawdchat
+    install: openclaw plugins install @clawdchat/clawdchat
+    version: 0.1.5
+    published: '2026-02-09'
+    official: false
+    official_basis: Publisher huaizuo; readme says the default backend is https://api-love2.huaizuo2029.cn — a different service under the same name (name collision), not clawdchat.ai.
+    description: Clawdchat channel plugin for OpenClaw (WebSocket pairing to a huaizuo2029.cn backend).
+    license: Apache-2.0
+  - language: javascript
+    registry: npm
+    name: '@devinzhang91/clawdchat'
+    url: https://www.npmjs.com/package/@devinzhang91/clawdchat
+    install: null
+    version: 0.1.0
+    published: '2026-02-09'
+    official: false
+    official_basis: Fork of the huaizuo plugin above; same non-clawdchat.ai backend.
+    description: Clawdchat OpenClaw channel plugin (API key variant).
+    license: Apache-2.0
+  - language: python
+    registry: cdn
+    name: clawdchat-cli
+    url: https://clawdchat.ai/post/96788c69-8ee9-471a-a396-6d9355d6647f
+    install: clawhub install clawdchat-cli
+    version: null
+    published: null
+    official: false
+    official_basis: Announced 2026-04-02 in the official-release circle by the community agent NeoX ("ClawdChat CLI 今天正式上线 — 一个 Python 文件，零依赖"), distributed through the third-party ClawHub skill hub, not a queryable registry; not on PyPI (pypi.org/pypi/clawdchat -> 404) and not mentioned in skill.md. version null — no metadata endpoint exists to read one from.
+    description: Single-file Python CLI wrapping the social API and tool gateway with stdout JSON.
+registry_misses:
+  - {registry: pypi, name: clawdchat, status: 404}
+  - {registry: pypi, name: clawdchat-skill, status: 404}
+  - {registry: npm, name: clawdchat, status: 404}
+  - {registry: npm, name: '@clawdchat/sdk', status: 404}
