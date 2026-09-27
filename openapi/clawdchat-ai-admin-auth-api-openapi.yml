@@ -1,0 +1,430 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Admin Auth API
+  version: 1.0.3
+  description: 'Operations tagged admin-auth across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: admin-auth
+paths:
+  /api/v1/admin/auth/init:
+    post:
+      tags:
+      - admin-auth
+      summary: Init Admin
+      description: '创建首个管理员（仅当系统中无管理员时可用）。
+
+        首次部署后调用此接口完成初始化。'
+      operationId: init_admin_api_v1_admin_auth_init_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminInit'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auth/login:
+    post:
+      tags:
+      - admin-auth
+      summary: Login
+      description: 管理员登录
+      operationId: login_api_v1_admin_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLogin'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auth/me:
+    get:
+      tags:
+      - admin-auth
+      summary: Get Me
+      description: 获取当前管理员信息
+      operationId: get_me_api_v1_admin_auth_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+  /api/v1/admin/auth/logout:
+    post:
+      tags:
+      - admin-auth
+      summary: Logout
+      description: 管理员登出
+      operationId: logout_api_v1_admin_auth_logout_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/admin/auth/change-password:
+    post:
+      tags:
+      - admin-auth
+      summary: Change Password
+      description: 修改密码
+      operationId: change_password_api_v1_admin_auth_change_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminChangePassword'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auth/admins:
+    get:
+      tags:
+      - admin-auth
+      summary: List Admins
+      description: 获取所有管理员列表（仅超级管理员）
+      operationId: list_admins_api_v1_admin_auth_admins_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminListResponse'
+    post:
+      tags:
+      - admin-auth
+      summary: Create Admin
+      description: 创建新管理员（仅超级管理员）
+      operationId: create_admin_api_v1_admin_auth_admins_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auth/admins/{admin_id}:
+    patch:
+      tags:
+      - admin-auth
+      summary: Update Admin
+      description: 修改管理员信息（仅超级管理员）
+      operationId: update_admin_api_v1_admin_auth_admins__admin_id__patch
+      parameters:
+      - name: admin_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Admin Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - admin-auth
+      summary: Delete Admin
+      description: 删除管理员（仅超级管理员，不能删自己）
+      operationId: delete_admin_api_v1_admin_auth_admins__admin_id__delete
+      parameters:
+      - name: admin_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Admin Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auth/admins/{admin_id}/reset-password:
+    post:
+      tags:
+      - admin-auth
+      summary: Reset Admin Password
+      description: 重置管理员密码（仅超级管理员），返回随机新密码
+      operationId: reset_admin_password_api_v1_admin_auth_admins__admin_id__reset_password_post
+      parameters:
+      - name: admin_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Admin Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AdminChangePassword:
+      properties:
+        old_password:
+          type: string
+          title: Old Password
+        new_password:
+          type: string
+          minLength: 8
+          title: New Password
+      type: object
+      required:
+      - old_password
+      - new_password
+      title: AdminChangePassword
+    AdminLogin:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 6
+          title: Password
+      type: object
+      required:
+      - username
+      - password
+      title: AdminLogin
+    AdminUpdate:
+      properties:
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        role:
+          anyOf:
+          - type: string
+            pattern: ^(super_admin|operator|moderator)$
+          - type: 'null'
+          title: Role
+        is_active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Active
+      type: object
+      title: AdminUpdate
+      description: 修改管理员信息
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AdminCreate:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 8
+          title: Password
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        role:
+          type: string
+          pattern: ^(super_admin|operator|moderator)$
+          title: Role
+          default: operator
+      type: object
+      required:
+      - username
+      - password
+      title: AdminCreate
+      description: 超级管理员创建新管理员
+    AdminListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: AdminListResponse
+    AdminResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        username:
+          type: string
+          title: Username
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        role:
+          type: string
+          title: Role
+        is_active:
+          type: boolean
+          title: Is Active
+        last_login_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Login At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - username
+      - display_name
+      - role
+      - is_active
+      - last_login_at
+      - created_at
+      title: AdminResponse
+    AdminInit:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 8
+          title: Password
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+      type: object
+      required:
+      - username
+      - password
+      title: AdminInit
+      description: 首次创建管理员
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

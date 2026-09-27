@@ -1,0 +1,586 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Tools API
+  version: 1.0.3
+  description: 'Operations tagged tools across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: Tools
+paths:
+  /api/v1/tools/stats:
+    get:
+      tags:
+      - Tools
+      summary: 工具网关统计（公开，缓存）
+      description: 返回工具 / 服务器 / 分类数量，用于首页营销卡片与 count-up 动画。服务端进程内缓存 1 小时，不会每次请求都打上游。数字为准实时。
+      operationId: tools_stats_api_v1_tools_stats_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/tools/search:
+    get:
+      tags:
+      - Tools
+      summary: 搜索 tools（主入口）
+      description: 语义搜索最相关的 MCP tools，返回 tool 名称 + 描述 + 完整 inputSchema，可直接构造参数调用
+      operationId: search_tools_api_v1_tools_search_get
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 搜索关键词（匹配工具功能，不是查询意图）
+          default: ''
+          title: Q
+        description: 搜索关键词（匹配工具功能，不是查询意图）
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 按分类浏览，如 搜索、开发、金融、社交
+          default: ''
+          title: Category
+        description: 按分类浏览，如 搜索、开发、金融、社交
+      - name: mode
+        in: query
+        required: false
+        schema:
+          type: string
+          description: keyword / semantic / hybrid（推荐）
+          default: hybrid
+          title: Mode
+        description: keyword / semantic / hybrid（推荐）
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 15
+          minimum: 1
+          description: 返回数量
+          default: 5
+          title: Limit
+        description: 返回数量
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/servers:
+    get:
+      tags:
+      - Tools
+      summary: 搜索 servers
+      description: 搜索 MCP Server（按关键词/分类/语义）
+      operationId: search_servers_api_v1_tools_servers_get
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 搜索关键词
+          default: ''
+          title: Q
+        description: 搜索关键词
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 按分类过滤
+          default: ''
+          title: Category
+        description: 按分类过滤
+      - name: mode
+        in: query
+        required: false
+        schema:
+          type: string
+          description: keyword / semantic / hybrid
+          default: hybrid
+          title: Mode
+        description: keyword / semantic / hybrid
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 30
+          minimum: 1
+          description: 返回数量
+          default: 10
+          title: Limit
+        description: 返回数量
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/categories:
+    get:
+      tags:
+      - Tools
+      summary: 获取所有分类及数量
+      description: 返回各分类名称、数量、代表性 server，可用于分类浏览
+      operationId: get_categories_api_v1_tools_categories_get
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/call:
+    post:
+      tags:
+      - Tools
+      summary: 调用工具
+      description: 通过 Uno 网关调用指定 MCP Server 上的工具
+      operationId: call_tool_api_v1_tools_call_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolCallRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/rate:
+    post:
+      tags:
+      - Tools
+      summary: 使用后评分
+      description: 对 tool/skill/server 打分（0-5），影响搜索排名
+      operationId: rate_server_api_v1_tools_rate_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateServerRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/connect:
+    post:
+      tags:
+      - Tools
+      summary: 连接 Server（获取 OAuth 授权链接）
+      description: 连接需要 OAuth 认证的 MCP Server。如果 server 需要授权，返回 auth_url 供人类用户在浏览器中完成认证；如果已连接，返回该 server 的实例信息。
+      operationId: connect_server_api_v1_tools_connect_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/execute:
+    post:
+      tags:
+      - Tools
+      summary: 沙盒脚本执行
+      description: 在安全沙盒中执行 Python/Bash 脚本
+      operationId: execute_script_api_v1_tools_execute_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScriptExecuteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/credits:
+    get:
+      tags:
+      - Tools
+      summary: 查看积分余额
+      description: 查询当前用户在工具网关的积分余额（V3 含钱包 ¥ 余额与充值入口）
+      operationId: get_credits_api_v1_tools_credits_get
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/skills/search:
+    post:
+      tags:
+      - Tools
+      summary: 搜索 Agent Skills
+      description: 语义搜索 Agent Skills（能力/指南/工作流），返回 meta 信息。使用 /skills/fetch 获取选中 skill 的完整 SKILL.md 内容。
+      operationId: search_skills_api_v1_tools_skills_search_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillsSearchRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tools/skills/fetch:
+    post:
+      tags:
+      - Tools
+      summary: 获取 Skills 全文
+      description: 批量获取 Skills 的完整 SKILL.md 内容 + 文件清单 + 下载链接。通常在 skills/search 后使用。
+      operationId: fetch_skills_api_v1_tools_skills_fetch_post
+      parameters:
+      - name: authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token
+          title: Authorization
+        description: Bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillsFetchRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SkillsFetchRequest:
+      properties:
+        skill_ids:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          title: Skill Ids
+          description: skill_id 列表（最多 10 个）
+      type: object
+      required:
+      - skill_ids
+      title: SkillsFetchRequest
+    SkillsSearchRequest:
+      properties:
+        q:
+          type: string
+          title: Q
+          description: 搜索关键词（自然语言描述需求）
+          default: ''
+        category:
+          type: string
+          title: Category
+          description: 按分类过滤（可选）
+          default: ''
+        mode:
+          type: string
+          title: Mode
+          description: keyword / semantic / hybrid
+          default: hybrid
+        limit:
+          type: integer
+          maximum: 50.0
+          minimum: 1.0
+          title: Limit
+          description: 返回数量
+          default: 20
+      type: object
+      title: SkillsSearchRequest
+    RateServerRequest:
+      properties:
+        tool_name:
+          type: string
+          title: Tool Name
+          description: 对 tool 评分（server.tool 格式，如 amap-maps.maps_weather）
+          default: ''
+        skill_id:
+          type: string
+          title: Skill Id
+          description: 对 skill 评分
+          default: ''
+        server_name:
+          type: string
+          title: Server Name
+          description: 兼容旧接口：对 server 评分
+          default: ''
+        rating:
+          type: number
+          maximum: 5.0
+          minimum: 0.0
+          title: Rating
+          description: 评分 0.0-5.0
+        comment:
+          type: string
+          title: Comment
+          description: 极简反馈
+          default: ''
+      type: object
+      required:
+      - rating
+      title: RateServerRequest
+    ScriptExecuteRequest:
+      properties:
+        language:
+          type: string
+          title: Language
+          description: '脚本语言: python / bash'
+          default: python
+        script:
+          type: string
+          title: Script
+          description: 脚本内容
+      type: object
+      required:
+      - script
+      title: ScriptExecuteRequest
+    ToolCallRequest:
+      properties:
+        server:
+          type: string
+          title: Server
+          description: MCP server 名称，如 time, github
+        tool:
+          type: string
+          title: Tool
+          description: 工具名称，如 get_current_time
+        arguments:
+          type: object
+          title: Arguments
+          description: 工具参数
+      type: object
+      required:
+      - server
+      - tool
+      title: ToolCallRequest
+    ConnectRequest:
+      properties:
+        server:
+          type: string
+          title: Server
+          description: 要连接的 MCP server 名称，如 github
+      type: object
+      required:
+      - server
+      title: ConnectRequest
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

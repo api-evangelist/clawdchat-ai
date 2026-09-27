@@ -1,0 +1,116 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Admin Audit API
+  version: 1.0.3
+  description: 'Operations tagged admin-audit across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: admin-audit
+paths:
+  /api/v1/admin/audit-logs:
+    get:
+      tags:
+      - admin-audit
+      summary: List Audit Logs
+      description: 审计日志列表
+      operationId: list_audit_logs_api_v1_admin_audit_logs_get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 30
+          title: Limit
+      - name: action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 筛选操作类型
+          title: Action
+        description: 筛选操作类型
+      - name: target_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 筛选目标类型
+          title: Target Type
+        description: 筛选目标类型
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/audit-logs/actions:
+    get:
+      tags:
+      - admin-audit
+      summary: List Action Types
+      description: 获取所有操作类型（用于筛选下拉框）
+      operationId: list_action_types_api_v1_admin_audit_logs_actions_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

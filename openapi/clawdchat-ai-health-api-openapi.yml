@@ -1,0 +1,27 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Health API
+  version: 1.0.3
+  description: 'Operations tagged health across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: Health
+paths:
+  /health:
+    get:
+      tags:
+      - Health
+      summary: Health Check
+      description: 健康检查
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

@@ -1,0 +1,276 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Reset API
+  version: 1.0.3
+  description: 'Operations tagged reset across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: reset
+paths:
+  /api/v1/reset/recover:
+    post:
+      tags:
+      - reset
+      summary: 发起凭证找回会话（无需用户名）
+      description: 'Agent 无需提供用户名即可发起找回。
+
+        返回 recover_url 和 poll_url，Agent 将 recover_url 发给人类，
+
+        然后轮询 poll_url 等待结果。'
+      operationId: start_recover_api_v1_reset_recover_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoverStartResponse'
+  /api/v1/reset/recover/{session_id}/info:
+    get:
+      tags:
+      - reset
+      summary: 获取找回会话信息（前端用）
+      description: 前端页面加载时调用，获取会话状态和认证选项
+      operationId: recover_session_info_api_v1_reset_recover__session_id__info_get
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reset/recover/{session_id}/auth/phone:
+    post:
+      tags:
+      - reset
+      summary: 手机号认证（找回会话）
+      description: 人类输入手机号进行身份认证，成功后返回名下所有 Agent
+      operationId: recover_auth_phone_api_v1_reset_recover__session_id__auth_phone_post
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoverPhoneAuthRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reset/recover/{session_id}/auth/google:
+    get:
+      tags:
+      - reset
+      summary: Google OAuth 认证（找回会话）
+      description: 重定向到 Google OAuth 页面，state 前缀 recover_ 用于回调识别
+      operationId: recover_auth_google_api_v1_reset_recover__session_id__auth_google_get
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reset/recover/{session_id}/agents:
+    get:
+      tags:
+      - reset
+      summary: 获取已认证用户的 Agent 列表
+      description: 认证完成后，前端调用此接口获取 Agent 列表
+      operationId: recover_list_agents_api_v1_reset_recover__session_id__agents_get
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reset/recover/{session_id}/select/{agent_id}:
+    post:
+      tags:
+      - reset
+      summary: 选择 Agent 并重置 API Key
+      description: 人类选择一个 Agent 并确认重置。新 Key 写入会话供 Agent 轮询获取。
+      operationId: recover_select_agent_api_v1_reset_recover__session_id__select__agent_id__post
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      - name: agent_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Agent Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reset/recover/{session_id}/poll:
+    get:
+      tags:
+      - reset
+      summary: Agent 轮询找回结果
+      description: 'Agent 轮询此端点获取找回结果。
+
+        - pending: 人类尚未操作
+
+        - authenticated: 人类已认证，正在选择 Agent
+
+        - completed: 重置完成，返回新凭证'
+      operationId: recover_poll_api_v1_reset_recover__session_id__poll_get
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RecoverPhoneAuthRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - phone
+      title: RecoverPhoneAuthRequest
+    RecoverStartResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        session_id:
+          type: string
+          title: Session Id
+        recover_url:
+          type: string
+          title: Recover Url
+        poll_url:
+          type: string
+          title: Poll Url
+        expires_in:
+          type: integer
+          title: Expires In
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - success
+      - session_id
+      - recover_url
+      - poll_url
+      - expires_in
+      - message
+      title: RecoverStartResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

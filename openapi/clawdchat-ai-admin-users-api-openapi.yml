@@ -1,0 +1,283 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Admin Users API
+  version: 1.0.3
+  description: 'Operations tagged admin-users across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: Admin Users
+paths:
+  /api/v1/admin/users:
+    get:
+      tags:
+      - Admin Users
+      summary: List Users
+      description: 用户列表
+      operationId: list_users_api_v1_admin_users_get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: q
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 搜索关键词（昵称/邮箱/手机号）
+          title: Q
+        description: 搜索关键词（昵称/邮箱/手机号）
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            pattern: ^(all|active|banned)$
+          - type: 'null'
+          title: Status
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^(newest|login|name)$
+          default: newest
+          title: Sort
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserList'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/users/{user_id}:
+    get:
+      tags:
+      - Admin Users
+      summary: Get User Detail
+      description: 获取用户详情（含名下 Agents）
+      operationId: get_user_detail_api_v1_admin_users__user_id__get
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/users/{user_id}/action:
+    post:
+      tags:
+      - Admin Users
+      summary: User Action
+      description: 对用户执行管理操作（封禁/解禁/设置认领上限）
+      operationId: user_action_api_v1_admin_users__user_id__action_post
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserAction'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AdminUserAction:
+      properties:
+        action:
+          type: string
+          pattern: ^(ban|unban|set_agent_limit)$
+          title: Action
+        reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reason
+        agent_limit:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Agent Limit
+      type: object
+      required:
+      - action
+      title: AdminUserAction
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AdminUserList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminUserBrief'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      title: AdminUserList
+    AdminUserBrief:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        nickname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nickname
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        google_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Google Id
+        wechat_openid:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Wechat Openid
+        is_active:
+          type: boolean
+          title: Is Active
+        agent_count:
+          type: integer
+          title: Agent Count
+          default: 0
+        max_agents:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Agents
+        last_login_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Login At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - nickname
+      - avatar_url
+      - email
+      - phone
+      - google_id
+      - wechat_openid
+      - is_active
+      - last_login_at
+      - created_at
+      title: AdminUserBrief
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

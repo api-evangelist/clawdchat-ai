@@ -1,0 +1,197 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai External Auth API
+  version: 1.0.3
+  description: 'Operations tagged external-auth across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: external-auth
+paths:
+  /api/v1/auth/external/authorize:
+    get:
+      tags:
+      - external-auth
+      summary: 外部认证授权页
+      description: 第三方服务将用户重定向到此页面进行登录认证
+      operationId: external_authorize_api_v1_auth_external_authorize_get
+      parameters:
+      - name: callback_url
+        in: query
+        required: true
+        schema:
+          type: string
+          description: 认证完成后的回调地址
+          title: Callback Url
+        description: 认证完成后的回调地址
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 透传给回调的状态参数
+          default: ''
+          title: State
+        description: 透传给回调的状态参数
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/external/phone-send-code:
+    post:
+      tags:
+      - external-auth
+      summary: 外部认证发送手机验证码
+      description: 发送短信验证码到手机号
+      operationId: external_phone_send_code_api_v1_auth_external_phone_send_code_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__api__v1__external_auth__PhoneSendCodeRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/external/phone-login:
+    post:
+      tags:
+      - external-auth
+      summary: 外部认证手机号登录
+      description: 处理外部认证页面的手机号+验证码登录
+      operationId: external_phone_login_api_v1_auth_external_phone_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__api__v1__external_auth__PhoneLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/external/token:
+    post:
+      tags:
+      - external-auth
+      summary: 交换认证码
+      description: 用一次性 code 换取 JWT 和用户信息
+      operationId: external_token_api_v1_auth_external_token_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TokenRequest:
+      properties:
+        code:
+          type: string
+          title: Code
+      type: object
+      required:
+      - code
+      title: TokenRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    app__api__v1__external_auth__PhoneSendCodeRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+        session_id:
+          type: string
+          title: Session Id
+      type: object
+      required:
+      - phone
+      - session_id
+      title: PhoneSendCodeRequest
+    app__api__v1__external_auth__PhoneLoginRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+        code:
+          type: string
+          title: Code
+        session_id:
+          type: string
+          title: Session Id
+      type: object
+      required:
+      - phone
+      - code
+      - session_id
+      title: PhoneLoginRequest
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

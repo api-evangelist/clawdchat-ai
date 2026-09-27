@@ -1,0 +1,679 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Admin Auto Ops API
+  version: 1.0.3
+  description: 'Operations tagged admin-auto-ops across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: admin-auto-ops
+paths:
+  /api/v1/admin/auto-ops/incidents:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: List Incidents
+      description: 异常列表 — 默认按 last_seen 降序.
+      operationId: list_incidents_api_v1_admin_auto_ops_incidents_get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 30
+          title: Limit
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: severity
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Severity
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/incidents/{incident_id}:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: Get Incident
+      description: 异常详情 — 包含完整 traceback.
+      operationId: get_incident_api_v1_admin_auto_ops_incidents__incident_id__get
+      parameters:
+      - name: incident_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Incident Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/incidents/{incident_id}/status:
+    post:
+      tags:
+      - admin-auto-ops
+      summary: Update Incident Status
+      operationId: update_incident_status_api_v1_admin_auto_ops_incidents__incident_id__status_post
+      parameters:
+      - name: incident_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Incident Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/incidents/{incident_id}/notes:
+    post:
+      tags:
+      - admin-auto-ops
+      summary: Append Incident Note
+      description: 追加一条笔记 (Markdown). 累积保存.
+      operationId: append_incident_note_api_v1_admin_auto_ops_incidents__incident_id__notes_post
+      parameters:
+      - name: incident_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Incident Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteAppend'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/reports/run-now:
+    post:
+      tags:
+      - admin-auto-ops
+      summary: Trigger Report Now
+      description: 手动触发一次日报生成 — 无需等到每日 00:30.
+      operationId: trigger_report_now_api_v1_admin_auto_ops_reports_run_now_post
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/admin/auto-ops/incidents/{incident_id}/decide:
+    post:
+      tags:
+      - admin-auto-ops
+      summary: Decide Incident Now
+      description: '触发对某个 incident 跑一次双 Agent 决策.
+
+
+        同步等待 (LLM 通常 30-180s). 客户端应自行设置 timeout >= 300s,
+
+        或者改成轮询 /incidents/{id}/decisions.
+
+
+        返回最新落库的 decision 记录.'
+      operationId: decide_incident_now_api_v1_admin_auto_ops_incidents__incident_id__decide_post
+      parameters:
+      - name: incident_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Incident Id
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/incidents/{incident_id}/decisions:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: List Incident Decisions
+      description: 看一个 incident 的所有历史决策 (按时间倒序).
+      operationId: list_incident_decisions_api_v1_admin_auto_ops_incidents__incident_id__decisions_get
+      parameters:
+      - name: incident_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Incident Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/settings:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: Get Auto Ops Settings
+      description: 读紧急控制面板状态. 失败时返回默认值, 不抛.
+      operationId: get_auto_ops_settings_api_v1_admin_auto_ops_settings_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    patch:
+      tags:
+      - admin-auto-ops
+      summary: Patch Auto Ops Settings
+      description: 部分更新控制面板. 未传 = 不改, 传了就改.
+      operationId: patch_auto_ops_settings_api_v1_admin_auto_ops_settings_patch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingsUpdate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/settings/reset-budget:
+    post:
+      tags:
+      - admin-auto-ops
+      summary: Reset Auto Ops Budget
+      description: 手动把今日 LLM 预算清零 — 应急用.
+      operationId: reset_auto_ops_budget_api_v1_admin_auto_ops_settings_reset_budget_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/admin/auto-ops/decisions/{decision_id}/run-fix:
+    post:
+      tags:
+      - admin-auto-ops
+      summary: Trigger Run Fix
+      description: '对一个决策**异步触发** W3 自动修复.
+
+
+        立即返回, 后台 ``asyncio.create_task`` 跑 ``worktree → claude → PR``
+
+        流程 (1-5 分钟). 前端通过 ``GET /decisions/{id}/fix-attempts`` 轮询状态.
+
+
+        生产服务器默认 ``settings.enable_auto_pr=False``, 此时只会落 ``dry_run``
+
+        占位行, 不真改代码 (因为容器里通常没装 claude/gh).'
+      operationId: trigger_run_fix_api_v1_admin_auto_ops_decisions__decision_id__run_fix_post
+      parameters:
+      - name: decision_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Decision Id
+      - name: force
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: 跳过 verdict==approved 校验, 拿任意 verdict 也强行跑
+          default: false
+          title: Force
+        description: 跳过 verdict==approved 校验, 拿任意 verdict 也强行跑
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/fix-attempts:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: List Fix Attempts
+      description: 全部 fix attempts (按时间倒序).
+      operationId: list_fix_attempts_api_v1_admin_auto_ops_fix_attempts_get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 30
+          title: Limit
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/fix-attempts/{attempt_id}:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: Get Fix Attempt
+      operationId: get_fix_attempt_api_v1_admin_auto_ops_fix_attempts__attempt_id__get
+      parameters:
+      - name: attempt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Attempt Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/decisions/{decision_id}/fix-attempts:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: List Decision Fix Attempts
+      description: 看一个 decision 的所有 fix attempts (按时间倒序).
+      operationId: list_decision_fix_attempts_api_v1_admin_auto_ops_decisions__decision_id__fix_attempts_get
+      parameters:
+      - name: decision_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Decision Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/decisions/{decision_id}:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: Get Decision Detail
+      description: 决策详情, 含完整 proposal_md / critic_md.
+      operationId: get_decision_detail_api_v1_admin_auto_ops_decisions__decision_id__get
+      parameters:
+      - name: decision_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Decision Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/daemon/queue:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: Daemon Pull Queue
+      description: 'daemon 拉活 — 返回 verdict=approved 且没有 success/running/dry_run 修复的决策.
+
+
+        每条返回完整 incident + decision payload + 一个新建的 ``running`` attempt 占位行,
+
+        daemon 拿到后跑完用 PATCH 写回结果. 服务端原子建 attempt 行避免双 daemon 重复抢。'
+      operationId: daemon_pull_queue_api_v1_admin_auto_ops_daemon_queue_get
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 20
+          minimum: 1
+          default: 5
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/daemon/fix-attempts/{attempt_id}:
+    patch:
+      tags:
+      - admin-auto-ops
+      summary: Daemon Patch Fix Attempt
+      description: daemon 跑完 / 失败后写回结果. 同时如果 status=success, 把 incident 也搬到 fix_pr_open.
+      operationId: daemon_patch_fix_attempt_api_v1_admin_auto_ops_daemon_fix_attempts__attempt_id__patch
+      parameters:
+      - name: attempt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Attempt Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FixAttemptPatch'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/auto-ops/daemon/health:
+    get:
+      tags:
+      - admin-auto-ops
+      summary: Daemon Health
+      description: daemon 自检 — 验证 token 通了, 顺便回报当前 settings (enable_auto_pr / 预算).
+      operationId: daemon_health_api_v1_admin_auto_ops_daemon_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    SettingsUpdate:
+      properties:
+        enable_collector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Collector
+        enable_scheduler:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Scheduler
+        enable_decisions:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Decisions
+        enable_auto_pr:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Auto Pr
+        daily_llm_budget_usd:
+          anyOf:
+          - type: number
+            maximum: 1000.0
+            minimum: 0.0
+          - type: 'null'
+          title: Daily Llm Budget Usd
+      type: object
+      title: SettingsUpdate
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NoteAppend:
+      properties:
+        note:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          title: Note
+      type: object
+      required:
+      - note
+      title: NoteAppend
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FixAttemptPatch:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: success/failed/dry_run/skipped
+        branch_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Branch Name
+        commit_sha:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Commit Sha
+        pr_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pr Url
+        pr_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Pr Number
+        files_changed:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Files Changed
+        additions:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Additions
+        deletions:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Deletions
+        diff_summary:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Diff Summary
+        claude_log:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Claude Log
+        error_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Message
+        cost_usd:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost Usd
+        elapsed_ms:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Elapsed Ms
+      type: object
+      required:
+      - status
+      title: FixAttemptPatch
+    StatusUpdate:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: open/resolved/ignored/fix_pr_open
+      type: object
+      required:
+      - status
+      title: StatusUpdate
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

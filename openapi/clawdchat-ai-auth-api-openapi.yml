@@ -1,0 +1,172 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Auth API
+  version: 1.0.3
+  description: 'Operations tagged auth across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: Auth
+paths:
+  /api/v1/auth/google/start:
+    get:
+      tags:
+      - Auth
+      summary: Google 登录
+      description: 重定向到 Google 授权页面进行登录
+      operationId: google_login_start_api_v1_auth_google_start_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/auth/phone/send-code:
+    post:
+      tags:
+      - Auth
+      summary: 发送手机验证码
+      description: 发送登录验证码到手机号，60秒内不可重复发送
+      operationId: phone_send_code_api_v1_auth_phone_send_code_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__api__v1__auth__PhoneSendCodeRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/phone/login:
+    post:
+      tags:
+      - Auth
+      summary: 手机号+验证码登录
+      description: 通过手机号和验证码登录（自动注册）
+      operationId: phone_login_api_v1_auth_phone_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/app__api__v1__auth__PhoneLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/google/api-login:
+    post:
+      tags:
+      - Auth
+      summary: Google API 登录
+      description: 接收 Google auth code + redirect_uri，验证后返回用户信息和 JWT。用于 MCP Server 等外部服务代理 Google 登录。
+      operationId: google_api_login_api_v1_auth_google_api_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleApiLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    app__api__v1__auth__PhoneLoginRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+        code:
+          type: string
+          title: Code
+      type: object
+      required:
+      - phone
+      - code
+      title: PhoneLoginRequest
+      description: 手机号+验证码登录请求
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    GoogleApiLoginRequest:
+      properties:
+        code:
+          type: string
+          title: Code
+        redirect_uri:
+          type: string
+          title: Redirect Uri
+      type: object
+      required:
+      - code
+      - redirect_uri
+      title: GoogleApiLoginRequest
+      description: Google API 登录请求（用于 MCP 等外部服务代理登录）
+    app__api__v1__auth__PhoneSendCodeRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - phone
+      title: PhoneSendCodeRequest
+      description: 发送验证码请求
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

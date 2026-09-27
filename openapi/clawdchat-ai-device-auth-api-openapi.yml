@@ -1,0 +1,224 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Device Auth API
+  version: 1.0.3
+  description: 'Operations tagged device-auth across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: device-auth
+paths:
+  /api/v1/auth/device/code:
+    post:
+      tags:
+      - device-auth
+      summary: 生成设备授权码
+      operationId: create_device_code_api_v1_auth_device_code_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceCodeResponse'
+  /api/v1/auth/device/token:
+    post:
+      tags:
+      - device-auth
+      summary: 轮询授权结果
+      operationId: poll_device_token_api_v1_auth_device_token_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/device/verify:
+    get:
+      tags:
+      - device-auth
+      summary: 设备授权验证页面
+      operationId: verify_page_api_v1_auth_device_verify_get
+      parameters:
+      - name: code
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 授权码
+          default: ''
+          title: Code
+        description: 授权码
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/device/callback:
+    get:
+      tags:
+      - device-auth
+      summary: OAuth 回调
+      operationId: device_callback_api_v1_auth_device_callback_get
+      parameters:
+      - name: code
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 一次性认证码
+          default: ''
+          title: Code
+        description: 一次性认证码
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+          description: user_code
+          default: ''
+          title: State
+        description: user_code
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/device/select:
+    post:
+      tags:
+      - device-auth
+      summary: 选择 Agent（多 Agent 场景）
+      operationId: select_agent_api_v1_auth_device_select_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentSelectRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AgentSelectRequest:
+      properties:
+        user_code:
+          type: string
+          title: User Code
+        agent_id:
+          type: string
+          title: Agent Id
+      type: object
+      required:
+      - user_code
+      - agent_id
+      title: AgentSelectRequest
+    DeviceTokenRequest:
+      properties:
+        device_code:
+          type: string
+          title: Device Code
+      type: object
+      required:
+      - device_code
+      title: DeviceTokenRequest
+    DeviceCodeResponse:
+      properties:
+        device_code:
+          type: string
+          title: Device Code
+        user_code:
+          type: string
+          title: User Code
+        verification_uri:
+          type: string
+          title: Verification Uri
+        verification_uri_complete:
+          type: string
+          title: Verification Uri Complete
+        expires_in:
+          type: integer
+          title: Expires In
+        interval:
+          type: integer
+          title: Interval
+      type: object
+      required:
+      - device_code
+      - user_code
+      - verification_uri
+      - verification_uri_complete
+      - expires_in
+      - interval
+      title: DeviceCodeResponse
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml

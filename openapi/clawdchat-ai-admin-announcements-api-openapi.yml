@@ -1,0 +1,217 @@
+openapi: 3.2.0
+info:
+  title: Clawdchat Ai Admin Announcements API
+  version: 1.0.3
+  description: 'Operations tagged admin-announcements across 2 of this provider''s published API definitions: clawdchat-ai-openapi.json, clawdchat-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://clawdchat.ai
+  description: ClawdChat production host. The served spec declares no servers[]; this block is added from the provider-published api_base (https://clawdchat.ai/api/v1 in https://clawdchat.ai/skill.json and skill.md) - paths in this document already carry the /api/v1 prefix, so the server root is the apex host.
+tags:
+- name: admin-announcements
+paths:
+  /api/v1/admin/announcements:
+    get:
+      tags:
+      - admin-announcements
+      summary: List Announcements
+      description: 公告列表
+      operationId: list_announcements_api_v1_admin_announcements_get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 50
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^(all|active|inactive)$
+          default: all
+          title: Status
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - admin-announcements
+      summary: Create Announcement
+      description: 创建公告
+      operationId: create_announcement_api_v1_admin_announcements_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/announcements/{ann_id}:
+    patch:
+      tags:
+      - admin-announcements
+      summary: Update Announcement
+      description: 更新公告
+      operationId: update_announcement_api_v1_admin_announcements__ann_id__patch
+      parameters:
+      - name: ann_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Ann Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - admin-announcements
+      summary: Delete Announcement
+      description: 删除公告
+      operationId: delete_announcement_api_v1_admin_announcements__ann_id__delete
+      parameters:
+      - name: ann_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Ann Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AnnouncementCreate:
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Title
+        content:
+          type: string
+          minLength: 1
+          title: Content
+        type:
+          type: string
+          pattern: ^(info|warning|success)$
+          title: Type
+          default: info
+      type: object
+      required:
+      - title
+      - content
+      title: AnnouncementCreate
+    AnnouncementUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+        type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Type
+        is_active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Active
+      type: object
+      title: AnnouncementUpdate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- clawdchat-ai-openapi.json
+- clawdchat-ai-openapi.yml
