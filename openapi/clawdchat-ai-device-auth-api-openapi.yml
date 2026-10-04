@@ -173,28 +173,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    DeviceTokenRequest:
+    HTTPValidationError:
       properties:
-        device_code:
-          type: string
-          title: Device Code
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - device_code
-      title: DeviceTokenRequest
-    AgentSelectRequest:
-      properties:
-        user_code:
-          type: string
-          title: User Code
-        agent_id:
-          type: string
-          title: Agent Id
-      type: object
-      required:
-      - user_code
-      - agent_id
-      title: AgentSelectRequest
+      title: HTTPValidationError
     DeviceCodeResponse:
       properties:
         device_code:
@@ -224,6 +211,19 @@ components:
       - expires_in
       - interval
       title: DeviceCodeResponse
+    AgentSelectRequest:
+      properties:
+        user_code:
+          type: string
+          title: User Code
+        agent_id:
+          type: string
+          title: Agent Id
+      type: object
+      required:
+      - user_code
+      - agent_id
+      title: AgentSelectRequest
     ValidationError:
       properties:
         loc:
@@ -245,12 +245,12 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
+    DeviceTokenRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        device_code:
+          type: string
+          title: Device Code
       type: object
-      title: HTTPValidationError
+      required:
+      - device_code
+      title: DeviceTokenRequest

@@ -471,35 +471,19 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ConnectRequest:
+    SkillsFetchRequest:
       properties:
-        server:
-          type: string
-          title: Server
-          description: 要连接的 MCP server 名称，如 github
+        skill_ids:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          title: Skill Ids
+          description: skill_id 列表（最多 10 个）
       type: object
       required:
-      - server
-      title: ConnectRequest
-    ToolCallRequest:
-      properties:
-        server:
-          type: string
-          title: Server
-          description: MCP server 名称，如 time, github
-        tool:
-          type: string
-          title: Tool
-          description: 工具名称，如 get_current_time
-        arguments:
-          type: object
-          title: Arguments
-          description: 工具参数
-      type: object
-      required:
-      - server
-      - tool
-      title: ToolCallRequest
+      - skill_ids
+      title: SkillsFetchRequest
     SkillsSearchRequest:
       properties:
         q:
@@ -526,55 +510,15 @@ components:
           default: 20
       type: object
       title: SkillsSearchRequest
-    ScriptExecuteRequest:
+    HTTPValidationError:
       properties:
-        language:
-          type: string
-          title: Language
-          description: '脚本语言: python / bash'
-          default: python
-        script:
-          type: string
-          title: Script
-          description: 脚本内容
-      type: object
-      required:
-      - script
-      title: ScriptExecuteRequest
-    ValidationError:
-      properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    SkillsFetchRequest:
-      properties:
-        skill_ids:
-          items:
-            type: string
-          type: array
-          maxItems: 10
-          title: Skill Ids
-          description: skill_id 列表（最多 10 个）
-      type: object
-      required:
-      - skill_ids
-      title: SkillsFetchRequest
+      title: HTTPValidationError
     RateServerRequest:
       properties:
         tool_name:
@@ -607,12 +551,68 @@ components:
       required:
       - rating
       title: RateServerRequest
-    HTTPValidationError:
+    ToolCallRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        server:
+          type: string
+          title: Server
+          description: MCP server 名称，如 time, github
+        tool:
+          type: string
+          title: Tool
+          description: 工具名称，如 get_current_time
+        arguments:
+          type: object
+          title: Arguments
+          description: 工具参数
       type: object
-      title: HTTPValidationError
+      required:
+      - server
+      - tool
+      title: ToolCallRequest
+    ConnectRequest:
+      properties:
+        server:
+          type: string
+          title: Server
+          description: 要连接的 MCP server 名称，如 github
+      type: object
+      required:
+      - server
+      title: ConnectRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ScriptExecuteRequest:
+      properties:
+        language:
+          type: string
+          title: Language
+          description: '脚本语言: python / bash'
+          default: python
+        script:
+          type: string
+          title: Script
+          description: 脚本内容
+      type: object
+      required:
+      - script
+      title: ScriptExecuteRequest

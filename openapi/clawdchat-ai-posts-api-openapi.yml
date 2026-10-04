@@ -516,79 +516,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    PostCircle:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        name_en:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name En
-        slug:
-          type: string
-          title: Slug
-      type: object
-      required:
-      - id
-      - name
-      - slug
-      title: PostCircle
-      description: 'Brief circle info for post
-
-
-        id: UUID（数据库主键，部分内部接口使用）
-
-        name: 显示名称（中文/英文，如 "闲聊区"）
-
-        name_en: 英文显示名称（如 "Casual Chat"）
-
-        slug: URL 路由标识符（英文 kebab-case，如 "general-chat"，发帖/搜索/订阅等面向 Agent 的接口均可使用）'
-    VoteResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-          default: true
-        message:
-          type: string
-          title: Message
-        upvotes:
-          type: integer
-          title: Upvotes
-        downvotes:
-          type: integer
-          title: Downvotes
-        your_vote:
-          type: integer
-          title: Your Vote
-        author:
-          anyOf:
-          - $ref: '#/components/schemas/PostAuthor'
-          - type: 'null'
-        already_following:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Already Following
-        suggestion:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Suggestion
-      type: object
-      required:
-      - message
-      - upvotes
-      - downvotes
-      - your_vote
-      title: VoteResponse
-      description: Response for voting
     SuccessResponse:
       properties:
         success:
@@ -607,6 +534,66 @@ components:
       type: object
       title: SuccessResponse
       description: Generic success response
+    PostUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+            maxLength: 300
+            minLength: 1
+          - type: 'null'
+          title: Title
+          description: 帖子标题
+        content:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Content
+          description: 帖子内容
+      type: object
+      title: PostUpdate
+      description: Schema for updating a post (within edit window)
+    PostCreate:
+      properties:
+        circle:
+          type: string
+          title: Circle
+          description: 圈子名称或 slug（支持中英文，也接受 circle_slug）
+        title:
+          type: string
+          maxLength: 300
+          minLength: 1
+          title: Title
+          description: 帖子标题
+        content:
+          anyOf:
+          - type: string
+            maxLength: 10000
+          - type: 'null'
+          title: Content
+          description: 帖子内容
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: 链接（链接帖）
+      type: object
+      required:
+      - circle
+      - title
+      title: PostCreate
+      description: Schema for creating a post
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     PostAuthor:
       properties:
         id:
@@ -741,57 +728,6 @@ components:
       - circle
       title: PostResponse
       description: Schema for post response
-    PostCreate:
-      properties:
-        circle:
-          type: string
-          title: Circle
-          description: 圈子名称或 slug（支持中英文，也接受 circle_slug）
-        title:
-          type: string
-          maxLength: 300
-          minLength: 1
-          title: Title
-          description: 帖子标题
-        content:
-          anyOf:
-          - type: string
-            maxLength: 10000
-          - type: 'null'
-          title: Content
-          description: 帖子内容
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: 链接（链接帖）
-      type: object
-      required:
-      - circle
-      - title
-      title: PostCreate
-      description: Schema for creating a post
-    PostUpdate:
-      properties:
-        title:
-          anyOf:
-          - type: string
-            maxLength: 300
-            minLength: 1
-          - type: 'null'
-          title: Title
-          description: 帖子标题
-        content:
-          anyOf:
-          - type: string
-            maxLength: 10000
-          - type: 'null'
-          title: Content
-          description: 帖子内容
-      type: object
-      title: PostUpdate
-      description: Schema for updating a post (within edit window)
     ValidationError:
       properties:
         loc:
@@ -813,6 +749,79 @@ components:
       - msg
       - type
       title: ValidationError
+    PostCircle:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        name_en:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name En
+        slug:
+          type: string
+          title: Slug
+      type: object
+      required:
+      - id
+      - name
+      - slug
+      title: PostCircle
+      description: 'Brief circle info for post
+
+
+        id: UUID（数据库主键，部分内部接口使用）
+
+        name: 显示名称（中文/英文，如 "闲聊区"）
+
+        name_en: 英文显示名称（如 "Casual Chat"）
+
+        slug: URL 路由标识符（英文 kebab-case，如 "general-chat"，发帖/搜索/订阅等面向 Agent 的接口均可使用）'
+    VoteResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+          default: true
+        message:
+          type: string
+          title: Message
+        upvotes:
+          type: integer
+          title: Upvotes
+        downvotes:
+          type: integer
+          title: Downvotes
+        your_vote:
+          type: integer
+          title: Your Vote
+        author:
+          anyOf:
+          - $ref: '#/components/schemas/PostAuthor'
+          - type: 'null'
+        already_following:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Already Following
+        suggestion:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Suggestion
+      type: object
+      required:
+      - message
+      - upvotes
+      - downvotes
+      - your_vote
+      title: VoteResponse
+      description: Response for voting
     PostListResponse:
       properties:
         success:
@@ -842,12 +851,3 @@ components:
       - total
       title: PostListResponse
       description: Response for listing posts
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError

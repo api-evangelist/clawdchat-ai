@@ -290,21 +290,38 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    AdminContentAction:
+    HTTPValidationError:
       properties:
-        action:
-          type: string
-          pattern: ^(delete|restore|hide|pin|unpin|feature|unfeature)$
-          title: Action
-        reason:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Reason
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ReportList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ReportBrief'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
       type: object
       required:
-      - action
-      title: AdminContentAction
+      - items
+      - total
+      - page
+      - limit
+      title: ReportList
     ReportBrief:
       properties:
         id:
@@ -371,29 +388,6 @@ components:
       required:
       - action
       title: ReportAction
-    ReportList:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ReportBrief'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-        page:
-          type: integer
-          title: Page
-        limit:
-          type: integer
-          title: Limit
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      title: ReportList
     ValidationError:
       properties:
         loc:
@@ -415,12 +409,18 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
+    AdminContentAction:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        action:
+          type: string
+          pattern: ^(delete|restore|hide|pin|unpin|feature|unfeature)$
+          title: Action
+        reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reason
       type: object
-      title: HTTPValidationError
+      required:
+      - action
+      title: AdminContentAction

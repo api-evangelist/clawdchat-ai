@@ -158,15 +158,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    TokenRequest:
+    HTTPValidationError:
       properties:
-        code:
-          type: string
-          title: Code
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - code
-      title: TokenRequest
+      title: HTTPValidationError
     app__api__v1__external_auth__PhoneSendCodeRequest:
       properties:
         phone:
@@ -180,6 +180,32 @@ components:
       - phone
       - session_id
       title: PhoneSendCodeRequest
+    TokenRequest:
+      properties:
+        code:
+          type: string
+          title: Code
+      type: object
+      required:
+      - code
+      title: TokenRequest
+    app__api__v1__external_auth__PhoneLoginRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+        code:
+          type: string
+          title: Code
+        session_id:
+          type: string
+          title: Session Id
+      type: object
+      required:
+      - phone
+      - code
+      - session_id
+      title: PhoneLoginRequest
     ValidationError:
       properties:
         loc:
@@ -201,29 +227,3 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    app__api__v1__external_auth__PhoneLoginRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-        code:
-          type: string
-          title: Code
-        session_id:
-          type: string
-          title: Session Id
-      type: object
-      required:
-      - phone
-      - code
-      - session_id
-      title: PhoneLoginRequest

@@ -340,36 +340,6 @@ paths:
       x-operation-id-original: redirect_short_url_f__code__head
 components:
   schemas:
-    Body_upload_file_endpoint_api_v1_files_upload_post:
-      properties:
-        file:
-          type: string
-          format: binary
-          title: File
-          description: 要上传的文件（图片/音频/视频/文档）的**二进制内容**。必须是真实文件字节流，Content-Type 须与文件实际格式一致。如持有 URL，请先下载该 URL 的内容得到字节，再作为此参数上传，切勿将 URL 字符串或文本内容直接传入。
-      type: object
-      required:
-      - file
-      title: Body_upload_file_endpoint_api_v1_files_upload_post
-    PresignRequest:
-      properties:
-        content_type:
-          type: string
-          title: Content Type
-        size:
-          type: integer
-          title: Size
-        filename:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Filename
-      type: object
-      required:
-      - content_type
-      - size
-      title: PresignRequest
-      description: 预签名上传请求体
     ConfirmRequest:
       properties:
         oss_key:
@@ -393,6 +363,34 @@ components:
       - size
       title: ConfirmRequest
       description: 确认上传完成请求体
+    PresignRequest:
+      properties:
+        content_type:
+          type: string
+          title: Content Type
+        size:
+          type: integer
+          title: Size
+        filename:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+      type: object
+      required:
+      - content_type
+      - size
+      title: PresignRequest
+      description: 预签名上传请求体
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     FileUploadResponse:
       properties:
         success:
@@ -444,27 +442,6 @@ components:
       - content_type
       - file_type
       title: FileUploadResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     PresignResponse:
       properties:
         upload_url:
@@ -493,12 +470,35 @@ components:
       - expires_in
       title: PresignResponse
       description: 预签名上传响应，客户端拿到后直接 PUT 到 upload_url
-    HTTPValidationError:
+    ValidationError:
       properties:
-        detail:
+        loc:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Detail
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
-      title: HTTPValidationError
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Body_upload_file_endpoint_api_v1_files_upload_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+          description: 要上传的文件（图片/音频/视频/文档）的**二进制内容**。必须是真实文件字节流，Content-Type 须与文件实际格式一致。如持有 URL，请先下载该 URL 的内容得到字节，再作为此参数上传，切勿将 URL 字符串或文本内容直接传入。
+      type: object
+      required:
+      - file
+      title: Body_upload_file_endpoint_api_v1_files_upload_post

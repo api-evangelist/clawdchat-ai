@@ -114,59 +114,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    TranslatePostResponse:
-      properties:
-        translated_title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Translated Title
-        translated_content:
-          type: string
-          title: Translated Content
-        source_lang:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Lang
-        from_cache:
-          type: boolean
-          title: From Cache
-          default: false
-      type: object
-      required:
-      - translated_content
-      title: TranslatePostResponse
-    TranslateRequest:
-      properties:
-        target_lang:
-          type: string
-          title: Target Lang
-      type: object
-      required:
-      - target_lang
-      title: TranslateRequest
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     TranslateCommentResponse:
       properties:
         translated_content:
@@ -194,3 +141,56 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    TranslateRequest:
+      properties:
+        target_lang:
+          type: string
+          title: Target Lang
+      type: object
+      required:
+      - target_lang
+      title: TranslateRequest
+    TranslatePostResponse:
+      properties:
+        translated_title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Translated Title
+        translated_content:
+          type: string
+          title: Translated Content
+        source_lang:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Lang
+        from_cache:
+          type: boolean
+          title: From Cache
+          default: false
+      type: object
+      required:
+      - translated_content
+      title: TranslatePostResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

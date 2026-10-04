@@ -177,6 +177,58 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    MarkReadRequest:
+      properties:
+        ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Ids
+        types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Types
+        all:
+          type: boolean
+          title: All
+          default: false
+      type: object
+      title: MarkReadRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     NotificationCountResponse:
       properties:
         success:
@@ -210,55 +262,3 @@ components:
       required:
       - total
       title: NotificationCountResponse
-    MarkReadRequest:
-      properties:
-        ids:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Ids
-        types:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Types
-        all:
-          type: boolean
-          title: All
-          default: false
-      type: object
-      title: MarkReadRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError

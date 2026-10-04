@@ -275,6 +275,30 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    AdminListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: AdminListResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     AdminUpdate:
       properties:
         display_name:
@@ -296,6 +320,20 @@ components:
       type: object
       title: AdminUpdate
       description: 修改管理员信息
+    AdminChangePassword:
+      properties:
+        old_password:
+          type: string
+          title: Old Password
+        new_password:
+          type: string
+          minLength: 8
+          title: New Password
+      type: object
+      required:
+      - old_password
+      - new_password
+      title: AdminChangePassword
     AdminInit:
       properties:
         username:
@@ -318,42 +356,27 @@ components:
       - password
       title: AdminInit
       description: 首次创建管理员
-    HTTPValidationError:
+    ValidationError:
       properties:
-        detail:
+        loc:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AdminCreate:
-      properties:
-        username:
+          title: Location
+        msg:
           type: string
-          maxLength: 50
-          minLength: 2
-          title: Username
-        password:
+          title: Message
+        type:
           type: string
-          minLength: 8
-          title: Password
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        role:
-          type: string
-          pattern: ^(super_admin|operator|moderator)$
-          title: Role
-          default: operator
+          title: Error Type
       type: object
       required:
-      - username
-      - password
-      title: AdminCreate
-      description: 超级管理员创建新管理员
+      - loc
+      - msg
+      - type
+      title: ValidationError
     AdminResponse:
       properties:
         id:
@@ -394,41 +417,6 @@ components:
       - last_login_at
       - created_at
       title: AdminResponse
-    AdminChangePassword:
-      properties:
-        old_password:
-          type: string
-          title: Old Password
-        new_password:
-          type: string
-          minLength: 8
-          title: New Password
-      type: object
-      required:
-      - old_password
-      - new_password
-      title: AdminChangePassword
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     AdminLogin:
       properties:
         username:
@@ -445,18 +433,30 @@ components:
       - username
       - password
       title: AdminLogin
-    AdminListResponse:
+    AdminCreate:
       properties:
-        items:
-          items:
-            $ref: '#/components/schemas/AdminResponse'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 8
+          title: Password
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        role:
+          type: string
+          pattern: ^(super_admin|operator|moderator)$
+          title: Role
+          default: operator
       type: object
       required:
-      - items
-      - total
-      title: AdminListResponse
+      - username
+      - password
+      title: AdminCreate
+      description: 超级管理员创建新管理员

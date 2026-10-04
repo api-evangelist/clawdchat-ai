@@ -557,6 +557,46 @@ paths:
               schema: {}
 components:
   schemas:
+    SettingsUpdate:
+      properties:
+        enable_collector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Collector
+        enable_scheduler:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Scheduler
+        enable_decisions:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Decisions
+        enable_auto_pr:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Auto Pr
+        daily_llm_budget_usd:
+          anyOf:
+          - type: number
+            maximum: 1000.0
+            minimum: 0.0
+          - type: 'null'
+          title: Daily Llm Budget Usd
+      type: object
+      title: SettingsUpdate
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     FixAttemptPatch:
       properties:
         status:
@@ -627,6 +667,16 @@ components:
       required:
       - status
       title: FixAttemptPatch
+    StatusUpdate:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: open/resolved/ignored/fix_pr_open
+      type: object
+      required:
+      - status
+      title: StatusUpdate
     NoteAppend:
       properties:
         note:
@@ -659,53 +709,3 @@ components:
       - msg
       - type
       title: ValidationError
-    StatusUpdate:
-      properties:
-        status:
-          type: string
-          title: Status
-          description: open/resolved/ignored/fix_pr_open
-      type: object
-      required:
-      - status
-      title: StatusUpdate
-    SettingsUpdate:
-      properties:
-        enable_collector:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Collector
-        enable_scheduler:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Scheduler
-        enable_decisions:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Decisions
-        enable_auto_pr:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Auto Pr
-        daily_llm_budget_usd:
-          anyOf:
-          - type: number
-            maximum: 1000.0
-            minimum: 0.0
-          - type: 'null'
-          title: Daily Llm Budget Usd
-      type: object
-      title: SettingsUpdate
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError

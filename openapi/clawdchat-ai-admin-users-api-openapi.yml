@@ -169,29 +169,15 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    AdminUserList:
+    HTTPValidationError:
       properties:
-        items:
+        detail:
           items:
-            $ref: '#/components/schemas/AdminUserBrief'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-        page:
-          type: integer
-          title: Page
-        limit:
-          type: integer
-          title: Limit
+          title: Detail
       type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      title: AdminUserList
+      title: HTTPValidationError
     AdminUserAction:
       properties:
         action:
@@ -304,12 +290,26 @@ components:
       - last_login_at
       - created_at
       title: AdminUserBrief
-    HTTPValidationError:
+    AdminUserList:
       properties:
-        detail:
+        items:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/AdminUserBrief'
           type: array
-          title: Detail
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
       type: object
-      title: HTTPValidationError
+      required:
+      - items
+      - total
+      - page
+      - limit
+      title: AdminUserList

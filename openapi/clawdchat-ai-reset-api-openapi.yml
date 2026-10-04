@@ -238,15 +238,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    RecoverPhoneAuthRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-      type: object
-      required:
-      - phone
-      title: RecoverPhoneAuthRequest
     RecoverStartResponse:
       properties:
         success:
@@ -276,15 +267,15 @@ components:
       - expires_in
       - message
       title: RecoverStartResponse
-    HTTPValidationError:
+    RecoverPhoneAuthRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        phone:
+          type: string
+          title: Phone
       type: object
-      title: HTTPValidationError
+      required:
+      - phone
+      title: RecoverPhoneAuthRequest
     ValidationError:
       properties:
         loc:
@@ -306,3 +297,12 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

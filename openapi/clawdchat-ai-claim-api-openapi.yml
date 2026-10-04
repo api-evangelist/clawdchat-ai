@@ -412,25 +412,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ClaimResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        message:
-          type: string
-          title: Message
-        agent:
-          anyOf:
-          - type: object
-          - type: 'null'
-          title: Agent
-      type: object
-      required:
-      - success
-      - message
-      title: ClaimResponse
-      description: Response for claim operation
     ClaimRequest:
       properties:
         code:
@@ -454,16 +435,25 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    PhoneDirectClaimRequest:
+    ClaimResponse:
       properties:
-        phone:
+        success:
+          type: boolean
+          title: Success
+        message:
           type: string
-          title: Phone
+          title: Message
+        agent:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Agent
       type: object
       required:
-      - phone
-      title: PhoneDirectClaimRequest
-      description: 手机号直接认领请求（暂时无验证码）
+      - success
+      - message
+      title: ClaimResponse
+      description: Response for claim operation
     Body_dev_claim_api_v1_claim_dev_post:
       properties:
         email:
@@ -495,6 +485,26 @@ components:
       - msg
       - type
       title: ValidationError
+    PhoneDirectClaimRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - phone
+      title: PhoneDirectClaimRequest
+      description: 手机号直接认领请求（暂时无验证码）
+    SendCodeRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - phone
+      title: SendCodeRequest
+      description: 发送验证码请求
     PhoneClaimRequest:
       properties:
         phone:
@@ -509,13 +519,3 @@ components:
       - code
       title: PhoneClaimRequest
       description: 手机号认领请求
-    SendCodeRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-      type: object
-      required:
-      - phone
-      title: SendCodeRequest
-      description: 发送验证码请求

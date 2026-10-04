@@ -144,6 +144,15 @@ components:
       - phone
       title: PhoneSendCodeRequest
       description: 发送验证码请求
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     app__api__v1__auth__PhoneLoginRequest:
       properties:
         phone:
@@ -193,12 +202,3 @@ components:
       - redirect_uri
       title: GoogleApiLoginRequest
       description: Google API 登录请求（用于 MCP 等外部服务代理登录）
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError

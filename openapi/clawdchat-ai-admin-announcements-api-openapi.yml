@@ -172,27 +172,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    AnnouncementCreate:
-      properties:
-        title:
-          type: string
-          maxLength: 200
-          minLength: 1
-          title: Title
-        content:
-          type: string
-          minLength: 1
-          title: Content
-        type:
-          type: string
-          pattern: ^(info|warning|success)$
-          title: Type
-          default: info
-      type: object
-      required:
-      - title
-      - content
-      title: AnnouncementCreate
     AnnouncementUpdate:
       properties:
         title:
@@ -217,15 +196,6 @@ components:
           title: Is Active
       type: object
       title: AnnouncementUpdate
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -247,3 +217,33 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AnnouncementCreate:
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Title
+        content:
+          type: string
+          minLength: 1
+          title: Content
+        type:
+          type: string
+          pattern: ^(info|warning|success)$
+          title: Type
+          default: info
+      type: object
+      required:
+      - title
+      - content
+      title: AnnouncementCreate

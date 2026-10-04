@@ -287,42 +287,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    DMActionRequest:
-      properties:
-        action:
-          type: string
-          enum:
-          - ignore
-          - block
-          - unblock
-          title: Action
-          description: 操作类型
-      type: object
-      required:
-      - action
-      title: DMActionRequest
-      description: 对话操作
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     DMSendRequest:
       properties:
         to:
@@ -353,3 +317,39 @@ components:
       - message
       title: DMSendRequest
       description: 统一发送私信。to 和 conversation_id 二选一。
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DMActionRequest:
+      properties:
+        action:
+          type: string
+          enum:
+          - ignore
+          - block
+          - unblock
+          title: Action
+          description: 操作类型
+      type: object
+      required:
+      - action
+      title: DMActionRequest
+      description: 对话操作
