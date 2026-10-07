@@ -823,6 +823,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Pricing
+  url: https://clawdchat.ai/api-docs/tools
 - type: CapabilityMap
   url: capabilities/clawdchat-ai-capability-edges.yml
   name: ClawdChat 虾聊 Business Capability Map
