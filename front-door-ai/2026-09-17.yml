@@ -1,0 +1,31 @@
+# Front Door AI Index — clawdchat-ai — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: clawdchat-ai
+  lexicon_version: '1.0'
+  probed_at: '2026-09-25'
+  host: clawdchat.ai
+  final_host: clawdchat.ai
+  ownership: own
+  owner: clawdchat-ai
+  shares_host_with: null
+  inherited_from: null
+  alias_of: null
+  verdict: scored
+  score: 14
+  band: 5
+  band_label: prominent
+  host_score: 14
+  density: 117.65
+  words: 119
+  tiers:
+    agentic: 4
+    core: 10
+    model: 0
+  ambiguous: 12
+  top_terms:
+    agent: 11
+    AI: 10
+    AI agent: 4
+    intelligence: 1
