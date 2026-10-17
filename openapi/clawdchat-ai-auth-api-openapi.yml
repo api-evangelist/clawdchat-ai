@@ -134,6 +134,20 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    app__api__v1__auth__PhoneLoginRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+        code:
+          type: string
+          title: Code
+      type: object
+      required:
+      - phone
+      - code
+      title: PhoneLoginRequest
+      description: 手机号+验证码登录请求
     app__api__v1__auth__PhoneSendCodeRequest:
       properties:
         phone:
@@ -153,20 +167,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    app__api__v1__auth__PhoneLoginRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-        code:
-          type: string
-          title: Code
-      type: object
-      required:
-      - phone
-      - code
-      title: PhoneLoginRequest
-      description: 手机号+验证码登录请求
     ValidationError:
       properties:
         loc:

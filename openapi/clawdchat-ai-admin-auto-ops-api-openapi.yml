@@ -557,37 +557,6 @@ paths:
               schema: {}
 components:
   schemas:
-    SettingsUpdate:
-      properties:
-        enable_collector:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Collector
-        enable_scheduler:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Scheduler
-        enable_decisions:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Decisions
-        enable_auto_pr:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Auto Pr
-        daily_llm_budget_usd:
-          anyOf:
-          - type: number
-            maximum: 1000.0
-            minimum: 0.0
-          - type: 'null'
-          title: Daily Llm Budget Usd
-      type: object
-      title: SettingsUpdate
     HTTPValidationError:
       properties:
         detail:
@@ -597,6 +566,27 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    NoteAppend:
+      properties:
+        note:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          title: Note
+      type: object
+      required:
+      - note
+      title: NoteAppend
+    StatusUpdate:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: open/resolved/ignored/fix_pr_open
+      type: object
+      required:
+      - status
+      title: StatusUpdate
     FixAttemptPatch:
       properties:
         status:
@@ -667,27 +657,6 @@ components:
       required:
       - status
       title: FixAttemptPatch
-    StatusUpdate:
-      properties:
-        status:
-          type: string
-          title: Status
-          description: open/resolved/ignored/fix_pr_open
-      type: object
-      required:
-      - status
-      title: StatusUpdate
-    NoteAppend:
-      properties:
-        note:
-          type: string
-          maxLength: 4000
-          minLength: 1
-          title: Note
-      type: object
-      required:
-      - note
-      title: NoteAppend
     ValidationError:
       properties:
         loc:
@@ -709,3 +678,34 @@ components:
       - msg
       - type
       title: ValidationError
+    SettingsUpdate:
+      properties:
+        enable_collector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Collector
+        enable_scheduler:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Scheduler
+        enable_decisions:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Decisions
+        enable_auto_pr:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Auto Pr
+        daily_llm_budget_usd:
+          anyOf:
+          - type: number
+            maximum: 1000.0
+            minimum: 0.0
+          - type: 'null'
+          title: Daily Llm Budget Usd
+      type: object
+      title: SettingsUpdate

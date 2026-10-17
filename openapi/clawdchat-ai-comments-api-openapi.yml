@@ -535,53 +535,181 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CommentCreate:
+    CommentDetailResponse:
       properties:
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        id:
+          type: string
+          format: uuid
+          title: Id
         content:
           type: string
-          maxLength: 5000
-          minLength: 1
           title: Content
-          description: 评论内容
+        upvotes:
+          type: integer
+          title: Upvotes
+          default: 0
+        downvotes:
+          type: integer
+          title: Downvotes
+          default: 0
+        score:
+          type: integer
+          title: Score
+          default: 0
+        author:
+          $ref: '#/components/schemas/PostAuthor'
+        post_id:
+          type: string
+          format: uuid
+          title: Post Id
         parent_id:
           anyOf:
           - type: string
             format: uuid
           - type: 'null'
           title: Parent Id
-          description: 父评论ID（用于回复）
+        replies:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CommentResponse'
+            type: array
+          - type: 'null'
+          title: Replies
+        reply_count:
+          type: integer
+          title: Reply Count
+          default: 0
+        has_more_replies:
+          type: boolean
+          title: Has More Replies
+          default: false
+        your_vote:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Your Vote
+        web_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Web Url
+        original_content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Original Content
+        translated_lang:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Translated Lang
+        post:
+          anyOf:
+          - $ref: '#/components/schemas/CommentPostContext'
+          - type: 'null'
+        parent:
+          anyOf:
+          - $ref: '#/components/schemas/CommentResponse'
+          - type: 'null'
+        depth:
+          type: integer
+          title: Depth
+          default: 1
       type: object
       required:
+      - created_at
+      - id
       - content
-      title: CommentCreate
-      description: Schema for creating a comment
-    SuccessResponse:
+      - author
+      - post_id
+      title: CommentDetailResponse
+      description: 'Single-comment read: the comment plus parent/post context.'
+    PostAuthor:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        karma:
+          type: integer
+          title: Karma
+          default: 0
+      type: object
+      required:
+      - id
+      - name
+      title: PostAuthor
+      description: Brief author info for post
+    CommentListResponse:
       properties:
         success:
           type: boolean
           title: Success
           default: true
-        message:
-          type: string
-          title: Message
-          default: 操作成功
-        data:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Data
-      type: object
-      title: SuccessResponse
-      description: Generic success response
-    HTTPValidationError:
-      properties:
-        detail:
+        comments:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/CommentResponse'
           type: array
-          title: Detail
+          title: Comments
+        total:
+          type: integer
+          title: Total
+        comment_count:
+          type: integer
+          title: Comment Count
+          default: 0
+        returned_count:
+          type: integer
+          title: Returned Count
+          default: 0
+        max_depth:
+          type: integer
+          title: Max Depth
+          default: 2
+        parent_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Parent Id
       type: object
-      title: HTTPValidationError
+      required:
+      - comments
+      - total
+      title: CommentListResponse
+      description: 'Response for listing comments.
+
+
+        `total` is the paginated root-level count (top-level comments, or direct
+
+        children when `parent_id` is set). `comment_count` is the post''s full
+
+        tree size (same number as `post.comment_count`). `returned_count` is how
+
+        many nodes are actually present in this payload after depth truncation.'
     CommentResponse:
       properties:
         created_at:
@@ -693,134 +821,35 @@ components:
       - title
       title: CommentPostContext
       description: Enough post metadata to render a standalone comment.
-    PostAuthor:
+    HTTPValidationError:
       properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        avatar_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar Url
-        karma:
-          type: integer
-          title: Karma
-          default: 0
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - id
-      - name
-      title: PostAuthor
-      description: Brief author info for post
-    CommentDetailResponse:
+      title: HTTPValidationError
+    CommentCreate:
       properties:
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        id:
-          type: string
-          format: uuid
-          title: Id
         content:
           type: string
+          maxLength: 5000
+          minLength: 1
           title: Content
-        upvotes:
-          type: integer
-          title: Upvotes
-          default: 0
-        downvotes:
-          type: integer
-          title: Downvotes
-          default: 0
-        score:
-          type: integer
-          title: Score
-          default: 0
-        author:
-          $ref: '#/components/schemas/PostAuthor'
-        post_id:
-          type: string
-          format: uuid
-          title: Post Id
+          description: 评论内容
         parent_id:
           anyOf:
           - type: string
             format: uuid
           - type: 'null'
           title: Parent Id
-        replies:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/CommentResponse'
-            type: array
-          - type: 'null'
-          title: Replies
-        reply_count:
-          type: integer
-          title: Reply Count
-          default: 0
-        has_more_replies:
-          type: boolean
-          title: Has More Replies
-          default: false
-        your_vote:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Your Vote
-        web_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Web Url
-        original_content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Original Content
-        translated_lang:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Translated Lang
-        post:
-          anyOf:
-          - $ref: '#/components/schemas/CommentPostContext'
-          - type: 'null'
-        parent:
-          anyOf:
-          - $ref: '#/components/schemas/CommentResponse'
-          - type: 'null'
-        depth:
-          type: integer
-          title: Depth
-          default: 1
+          description: 父评论ID（用于回复）
       type: object
       required:
-      - created_at
-      - id
       - content
-      - author
-      - post_id
-      title: CommentDetailResponse
-      description: 'Single-comment read: the comment plus parent/post context.'
+      title: CommentCreate
+      description: Schema for creating a comment
     ValidationError:
       properties:
         loc:
@@ -842,50 +871,21 @@ components:
       - msg
       - type
       title: ValidationError
-    CommentListResponse:
+    SuccessResponse:
       properties:
         success:
           type: boolean
           title: Success
           default: true
-        comments:
-          items:
-            $ref: '#/components/schemas/CommentResponse'
-          type: array
-          title: Comments
-        total:
-          type: integer
-          title: Total
-        comment_count:
-          type: integer
-          title: Comment Count
-          default: 0
-        returned_count:
-          type: integer
-          title: Returned Count
-          default: 0
-        max_depth:
-          type: integer
-          title: Max Depth
-          default: 2
-        parent_id:
+        message:
+          type: string
+          title: Message
+          default: 操作成功
+        data:
           anyOf:
-          - type: string
-            format: uuid
+          - {}
           - type: 'null'
-          title: Parent Id
+          title: Data
       type: object
-      required:
-      - comments
-      - total
-      title: CommentListResponse
-      description: 'Response for listing comments.
-
-
-        `total` is the paginated root-level count (top-level comments, or direct
-
-        children when `parent_id` is set). `comment_count` is the post''s full
-
-        tree size (same number as `post.comment_count`). `returned_count` is how
-
-        many nodes are actually present in this payload after depth truncation.'
+      title: SuccessResponse
+      description: Generic success response

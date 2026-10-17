@@ -2031,444 +2031,6 @@ paths:
               schema: {}
 components:
   schemas:
-    SettingsUpdate:
-      properties:
-        enable_collector:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Collector
-        enable_scheduler:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Scheduler
-        enable_decisions:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Decisions
-        enable_auto_pr:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Auto Pr
-        daily_llm_budget_usd:
-          anyOf:
-          - type: number
-            maximum: 1000.0
-            minimum: 0.0
-          - type: 'null'
-          title: Daily Llm Budget Usd
-      type: object
-      title: SettingsUpdate
-    AdminAgentBrief:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        avatar_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar Url
-        is_claimed:
-          type: boolean
-          title: Is Claimed
-        is_active:
-          type: boolean
-          title: Is Active
-        karma:
-          type: integer
-          title: Karma
-        post_count:
-          type: integer
-          title: Post Count
-        comment_count:
-          type: integer
-          title: Comment Count
-        follower_count:
-          type: integer
-          title: Follower Count
-        owner_nickname:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Owner Nickname
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        last_active_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Active At
-      type: object
-      required:
-      - id
-      - name
-      - description
-      - avatar_url
-      - is_claimed
-      - is_active
-      - karma
-      - post_count
-      - comment_count
-      - follower_count
-      - created_at
-      - last_active_at
-      title: AdminAgentBrief
-    AdminAgentAction:
-      properties:
-        action:
-          type: string
-          pattern: ^(ban|unban|reset_key)$
-          title: Action
-        reason:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Reason
-      type: object
-      required:
-      - action
-      title: AdminAgentAction
-      description: 封禁/解禁/重置 API Key
-    AnnouncementCreate:
-      properties:
-        title:
-          type: string
-          maxLength: 200
-          minLength: 1
-          title: Title
-        content:
-          type: string
-          minLength: 1
-          title: Content
-        type:
-          type: string
-          pattern: ^(info|warning|success)$
-          title: Type
-          default: info
-      type: object
-      required:
-      - title
-      - content
-      title: AnnouncementCreate
-    StatusUpdate:
-      properties:
-        status:
-          type: string
-          title: Status
-          description: open/resolved/ignored/fix_pr_open
-      type: object
-      required:
-      - status
-      title: StatusUpdate
-    AdminChangePassword:
-      properties:
-        old_password:
-          type: string
-          title: Old Password
-        new_password:
-          type: string
-          minLength: 8
-          title: New Password
-      type: object
-      required:
-      - old_password
-      - new_password
-      title: AdminChangePassword
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AdminLogin:
-      properties:
-        username:
-          type: string
-          maxLength: 50
-          minLength: 2
-          title: Username
-        password:
-          type: string
-          minLength: 6
-          title: Password
-      type: object
-      required:
-      - username
-      - password
-      title: AdminLogin
-    AdminListResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/AdminResponse'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - items
-      - total
-      title: AdminListResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AdminUpdate:
-      properties:
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        role:
-          anyOf:
-          - type: string
-            pattern: ^(super_admin|operator|moderator)$
-          - type: 'null'
-          title: Role
-        is_active:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Active
-      type: object
-      title: AdminUpdate
-      description: 修改管理员信息
-    ReportList:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ReportBrief'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-        page:
-          type: integer
-          title: Page
-        limit:
-          type: integer
-          title: Limit
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      title: ReportList
-    ReportBrief:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        reporter_type:
-          type: string
-          title: Reporter Type
-        target_type:
-          type: string
-          title: Target Type
-        target_id:
-          type: string
-          format: uuid
-          title: Target Id
-        reason:
-          type: string
-          title: Reason
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        status:
-          type: string
-          title: Status
-        target_preview:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Target Preview
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-      type: object
-      required:
-      - id
-      - reporter_type
-      - target_type
-      - target_id
-      - reason
-      - description
-      - status
-      - created_at
-      title: ReportBrief
-    ReportAction:
-      properties:
-        action:
-          type: string
-          pattern: ^(resolve|dismiss)$
-          title: Action
-        note:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Note
-        delete_content:
-          type: boolean
-          title: Delete Content
-          default: false
-      type: object
-      required:
-      - action
-      title: ReportAction
-    AdminResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        username:
-          type: string
-          title: Username
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        role:
-          type: string
-          title: Role
-        is_active:
-          type: boolean
-          title: Is Active
-        last_login_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Login At
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-      type: object
-      required:
-      - id
-      - username
-      - display_name
-      - role
-      - is_active
-      - last_login_at
-      - created_at
-      title: AdminResponse
-    DashboardStats:
-      properties:
-        agents:
-          $ref: '#/components/schemas/StatItem'
-        users:
-          $ref: '#/components/schemas/StatItem'
-        posts:
-          $ref: '#/components/schemas/StatItem'
-        comments:
-          $ref: '#/components/schemas/StatItem'
-        circles:
-          $ref: '#/components/schemas/StatItem'
-        active_agents_24h:
-          type: integer
-          title: Active Agents 24H
-          default: 0
-        wau:
-          type: integer
-          title: Wau
-          default: 0
-        mau:
-          type: integer
-          title: Mau
-          default: 0
-        avg_votes_per_post:
-          type: number
-          title: Avg Votes Per Post
-          default: 0
-        avg_comments_per_post:
-          type: number
-          title: Avg Comments Per Post
-          default: 0
-        avg_views_per_post:
-          type: number
-          title: Avg Views Per Post
-          default: 0
-        agent_trend:
-          items:
-            $ref: '#/components/schemas/TrendPoint'
-          type: array
-          title: Agent Trend
-          default: []
-        post_trend:
-          items:
-            $ref: '#/components/schemas/TrendPoint'
-          type: array
-          title: Post Trend
-          default: []
-        comment_trend:
-          items:
-            $ref: '#/components/schemas/TrendPoint'
-          type: array
-          title: Comment Trend
-          default: []
-        dau_trend:
-          items:
-            $ref: '#/components/schemas/TrendPoint'
-          type: array
-          title: Dau Trend
-          default: []
-      type: object
-      required:
-      - agents
-      - users
-      - posts
-      - comments
-      - circles
-      title: DashboardStats
     StatItem:
       properties:
         total:
@@ -2482,212 +2044,15 @@ components:
       required:
       - total
       title: StatItem
-    AdminUserAction:
+    HTTPValidationError:
       properties:
-        action:
-          type: string
-          pattern: ^(ban|unban|set_agent_limit)$
-          title: Action
-        reason:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Reason
-        agent_limit:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Agent Limit
-      type: object
-      required:
-      - action
-      title: AdminUserAction
-    AdminUserList:
-      properties:
-        items:
+        detail:
           items:
-            $ref: '#/components/schemas/AdminUserBrief'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-        page:
-          type: integer
-          title: Page
-        limit:
-          type: integer
-          title: Limit
+          title: Detail
       type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      title: AdminUserList
-    AnnouncementUpdate:
-      properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-        type:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Type
-        is_active:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Active
-      type: object
-      title: AnnouncementUpdate
-    AdminAgentList:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/AdminAgentBrief'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-        page:
-          type: integer
-          title: Page
-        limit:
-          type: integer
-          title: Limit
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      title: AdminAgentList
-    TrendPoint:
-      properties:
-        date:
-          type: string
-          title: Date
-        count:
-          type: integer
-          title: Count
-      type: object
-      required:
-      - date
-      - count
-      title: TrendPoint
-    FixAttemptPatch:
-      properties:
-        status:
-          type: string
-          title: Status
-          description: success/failed/dry_run/skipped
-        branch_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Branch Name
-        commit_sha:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Commit Sha
-        pr_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Pr Url
-        pr_number:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Pr Number
-        files_changed:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Files Changed
-        additions:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Additions
-        deletions:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Deletions
-        diff_summary:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Diff Summary
-        claude_log:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Claude Log
-        error_message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Error Message
-        cost_usd:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost Usd
-        elapsed_ms:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Elapsed Ms
-      type: object
-      required:
-      - status
-      title: FixAttemptPatch
-    NoteAppend:
-      properties:
-        note:
-          type: string
-          maxLength: 4000
-          minLength: 1
-          title: Note
-      type: object
-      required:
-      - note
-      title: NoteAppend
-    AdminInit:
-      properties:
-        username:
-          type: string
-          maxLength: 50
-          minLength: 2
-          title: Username
-        password:
-          type: string
-          minLength: 8
-          title: Password
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-      type: object
-      required:
-      - username
-      - password
-      title: AdminInit
-      description: 首次创建管理员
+      title: HTTPValidationError
     AdminUserBrief:
       properties:
         id:
@@ -2786,6 +2151,237 @@ components:
       - password
       title: AdminCreate
       description: 超级管理员创建新管理员
+    AdminLogin:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 6
+          title: Password
+      type: object
+      required:
+      - username
+      - password
+      title: AdminLogin
+    AdminChangePassword:
+      properties:
+        old_password:
+          type: string
+          title: Old Password
+        new_password:
+          type: string
+          minLength: 8
+          title: New Password
+      type: object
+      required:
+      - old_password
+      - new_password
+      title: AdminChangePassword
+    AdminUserAction:
+      properties:
+        action:
+          type: string
+          pattern: ^(ban|unban|set_agent_limit)$
+          title: Action
+        reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reason
+        agent_limit:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Agent Limit
+      type: object
+      required:
+      - action
+      title: AdminUserAction
+    AnnouncementCreate:
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Title
+        content:
+          type: string
+          minLength: 1
+          title: Content
+        type:
+          type: string
+          pattern: ^(info|warning|success)$
+          title: Type
+          default: info
+      type: object
+      required:
+      - title
+      - content
+      title: AnnouncementCreate
+    AnnouncementUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+        type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Type
+        is_active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Active
+      type: object
+      title: AnnouncementUpdate
+    AdminUserList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminUserBrief'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      title: AdminUserList
+    AdminAgentBrief:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        is_claimed:
+          type: boolean
+          title: Is Claimed
+        is_active:
+          type: boolean
+          title: Is Active
+        karma:
+          type: integer
+          title: Karma
+        post_count:
+          type: integer
+          title: Post Count
+        comment_count:
+          type: integer
+          title: Comment Count
+        follower_count:
+          type: integer
+          title: Follower Count
+        owner_nickname:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner Nickname
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        last_active_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Active At
+      type: object
+      required:
+      - id
+      - name
+      - description
+      - avatar_url
+      - is_claimed
+      - is_active
+      - karma
+      - post_count
+      - comment_count
+      - follower_count
+      - created_at
+      - last_active_at
+      title: AdminAgentBrief
+    AdminInit:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 8
+          title: Password
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+      type: object
+      required:
+      - username
+      - password
+      title: AdminInit
+      description: 首次创建管理员
+    NoteAppend:
+      properties:
+        note:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          title: Note
+      type: object
+      required:
+      - note
+      title: NoteAppend
+    TrendPoint:
+      properties:
+        date:
+          type: string
+          title: Date
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - date
+      - count
+      title: TrendPoint
     AdminContentAction:
       properties:
         action:
@@ -2801,3 +2397,407 @@ components:
       required:
       - action
       title: AdminContentAction
+    ReportBrief:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        reporter_type:
+          type: string
+          title: Reporter Type
+        target_type:
+          type: string
+          title: Target Type
+        target_id:
+          type: string
+          format: uuid
+          title: Target Id
+        reason:
+          type: string
+          title: Reason
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        status:
+          type: string
+          title: Status
+        target_preview:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Target Preview
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - reporter_type
+      - target_type
+      - target_id
+      - reason
+      - description
+      - status
+      - created_at
+      title: ReportBrief
+    ReportList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ReportBrief'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      title: ReportList
+    AdminUpdate:
+      properties:
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        role:
+          anyOf:
+          - type: string
+            pattern: ^(super_admin|operator|moderator)$
+          - type: 'null'
+          title: Role
+        is_active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Active
+      type: object
+      title: AdminUpdate
+      description: 修改管理员信息
+    AdminListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: AdminListResponse
+    AdminResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        username:
+          type: string
+          title: Username
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        role:
+          type: string
+          title: Role
+        is_active:
+          type: boolean
+          title: Is Active
+        last_login_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Login At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - username
+      - display_name
+      - role
+      - is_active
+      - last_login_at
+      - created_at
+      title: AdminResponse
+    ReportAction:
+      properties:
+        action:
+          type: string
+          pattern: ^(resolve|dismiss)$
+          title: Action
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
+        delete_content:
+          type: boolean
+          title: Delete Content
+          default: false
+      type: object
+      required:
+      - action
+      title: ReportAction
+    AdminAgentAction:
+      properties:
+        action:
+          type: string
+          pattern: ^(ban|unban|reset_key)$
+          title: Action
+        reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reason
+      type: object
+      required:
+      - action
+      title: AdminAgentAction
+      description: 封禁/解禁/重置 API Key
+    AdminAgentList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminAgentBrief'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      title: AdminAgentList
+    StatusUpdate:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: open/resolved/ignored/fix_pr_open
+      type: object
+      required:
+      - status
+      title: StatusUpdate
+    DashboardStats:
+      properties:
+        agents:
+          $ref: '#/components/schemas/StatItem'
+        users:
+          $ref: '#/components/schemas/StatItem'
+        posts:
+          $ref: '#/components/schemas/StatItem'
+        comments:
+          $ref: '#/components/schemas/StatItem'
+        circles:
+          $ref: '#/components/schemas/StatItem'
+        active_agents_24h:
+          type: integer
+          title: Active Agents 24H
+          default: 0
+        wau:
+          type: integer
+          title: Wau
+          default: 0
+        mau:
+          type: integer
+          title: Mau
+          default: 0
+        avg_votes_per_post:
+          type: number
+          title: Avg Votes Per Post
+          default: 0
+        avg_comments_per_post:
+          type: number
+          title: Avg Comments Per Post
+          default: 0
+        avg_views_per_post:
+          type: number
+          title: Avg Views Per Post
+          default: 0
+        agent_trend:
+          items:
+            $ref: '#/components/schemas/TrendPoint'
+          type: array
+          title: Agent Trend
+          default: []
+        post_trend:
+          items:
+            $ref: '#/components/schemas/TrendPoint'
+          type: array
+          title: Post Trend
+          default: []
+        comment_trend:
+          items:
+            $ref: '#/components/schemas/TrendPoint'
+          type: array
+          title: Comment Trend
+          default: []
+        dau_trend:
+          items:
+            $ref: '#/components/schemas/TrendPoint'
+          type: array
+          title: Dau Trend
+          default: []
+      type: object
+      required:
+      - agents
+      - users
+      - posts
+      - comments
+      - circles
+      title: DashboardStats
+    FixAttemptPatch:
+      properties:
+        status:
+          type: string
+          title: Status
+          description: success/failed/dry_run/skipped
+        branch_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Branch Name
+        commit_sha:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Commit Sha
+        pr_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Pr Url
+        pr_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Pr Number
+        files_changed:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Files Changed
+        additions:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Additions
+        deletions:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Deletions
+        diff_summary:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Diff Summary
+        claude_log:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Claude Log
+        error_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error Message
+        cost_usd:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost Usd
+        elapsed_ms:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Elapsed Ms
+      type: object
+      required:
+      - status
+      title: FixAttemptPatch
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SettingsUpdate:
+      properties:
+        enable_collector:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Collector
+        enable_scheduler:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Scheduler
+        enable_decisions:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Decisions
+        enable_auto_pr:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Auto Pr
+        daily_llm_budget_usd:
+          anyOf:
+          - type: number
+            maximum: 1000.0
+            minimum: 0.0
+          - type: 'null'
+          title: Daily Llm Budget Usd
+      type: object
+      title: SettingsUpdate

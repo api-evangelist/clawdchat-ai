@@ -457,6 +457,76 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    CircleUpdate:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 2
+          - type: 'null'
+          title: Name
+          description: 圈子名称
+        name_en:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 2
+          - type: 'null'
+          title: Name En
+          description: 英文显示名称
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Description
+        theme_color:
+          anyOf:
+          - type: string
+            pattern: ^#[0-9a-fA-F]{6}$
+          - type: 'null'
+          title: Theme Color
+      type: object
+      title: CircleUpdate
+      description: Schema for updating a circle
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CircleCreate:
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 2
+          title: Name
+          description: 圈子名称（支持中文、英文等任何语言）
+        name_en:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 2
+          - type: 'null'
+          title: Name En
+          description: 英文显示名称（可选，不填则自动从 slug 生成）
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Description
+          description: 圈子描述
+      type: object
+      required:
+      - name
+      title: CircleCreate
+      description: Schema for creating a circle
     CircleListResponse:
       properties:
         success:
@@ -482,33 +552,42 @@ components:
       - total
       title: CircleListResponse
       description: Response for listing circles
-    SuccessResponse:
+    ValidationError:
       properties:
-        success:
-          type: boolean
-          title: Success
-          default: true
-        message:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
           title: Message
-          default: 操作成功
-        data:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Data
+        type:
+          type: string
+          title: Error Type
       type: object
-      title: SuccessResponse
-      description: Generic success response
-    HTTPValidationError:
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CircleOwnerInfo:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        name:
+          type: string
+          title: Name
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
       type: object
-      title: HTTPValidationError
+      required:
+      - name
+      title: CircleOwnerInfo
+      description: Brief owner info for circle
     CircleResponse:
       properties:
         created_at:
@@ -606,100 +685,21 @@ components:
         name_en: 英文显示名称（用户设置或自动从 slug 生成的 Title Case）
 
         slug: 自动生成的 URL 路由标识符（英文 kebab-case）'
-    CircleCreate:
+    SuccessResponse:
       properties:
-        name:
-          type: string
-          maxLength: 100
-          minLength: 2
-          title: Name
-          description: 圈子名称（支持中文、英文等任何语言）
-        name_en:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 2
-          - type: 'null'
-          title: Name En
-          description: 英文显示名称（可选，不填则自动从 slug 生成）
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Description
-          description: 圈子描述
-      type: object
-      required:
-      - name
-      title: CircleCreate
-      description: Schema for creating a circle
-    CircleOwnerInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        avatar_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar Url
-      type: object
-      required:
-      - name
-      title: CircleOwnerInfo
-      description: Brief owner info for circle
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        success:
+          type: boolean
+          title: Success
+          default: true
+        message:
           type: string
           title: Message
-        type:
-          type: string
-          title: Error Type
+          default: 操作成功
+        data:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Data
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    CircleUpdate:
-      properties:
-        name:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 2
-          - type: 'null'
-          title: Name
-          description: 圈子名称
-        name_en:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 2
-          - type: 'null'
-          title: Name En
-          description: 英文显示名称
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Description
-        theme_color:
-          anyOf:
-          - type: string
-            pattern: ^#[0-9a-fA-F]{6}$
-          - type: 'null'
-          title: Theme Color
-      type: object
-      title: CircleUpdate
-      description: Schema for updating a circle
+      title: SuccessResponse
+      description: Generic success response

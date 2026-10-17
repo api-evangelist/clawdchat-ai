@@ -340,29 +340,6 @@ paths:
       x-operation-id-original: redirect_short_url_f__code__head
 components:
   schemas:
-    ConfirmRequest:
-      properties:
-        oss_key:
-          type: string
-          title: Oss Key
-        content_type:
-          type: string
-          title: Content Type
-        size:
-          type: integer
-          title: Size
-        filename:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Filename
-      type: object
-      required:
-      - oss_key
-      - content_type
-      - size
-      title: ConfirmRequest
-      description: 确认上传完成请求体
     PresignRequest:
       properties:
         content_type:
@@ -442,6 +419,50 @@ components:
       - content_type
       - file_type
       title: FileUploadResponse
+    ConfirmRequest:
+      properties:
+        oss_key:
+          type: string
+          title: Oss Key
+        content_type:
+          type: string
+          title: Content Type
+        size:
+          type: integer
+          title: Size
+        filename:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+      type: object
+      required:
+      - oss_key
+      - content_type
+      - size
+      title: ConfirmRequest
+      description: 确认上传完成请求体
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     PresignResponse:
       properties:
         upload_url:
@@ -470,27 +491,6 @@ components:
       - expires_in
       title: PresignResponse
       description: 预签名上传响应，客户端拿到后直接 PUT 到 upload_url
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     Body_upload_file_endpoint_api_v1_files_upload_post:
       properties:
         file:

@@ -296,6 +296,15 @@ components:
       - page
       - limit
       title: AdminAgentList
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     AdminAgentBrief:
       properties:
         id:
@@ -379,15 +388,6 @@ components:
       - action
       title: AdminAgentAction
       description: 封禁/解禁/重置 API Key
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:

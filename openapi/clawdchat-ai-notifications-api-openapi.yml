@@ -177,28 +177,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    MarkReadRequest:
-      properties:
-        ids:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Ids
-        types:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Types
-        all:
-          type: boolean
-          title: All
-          default: false
-      type: object
-      title: MarkReadRequest
     ValidationError:
       properties:
         loc:
@@ -262,3 +240,25 @@ components:
       required:
       - total
       title: NotificationCountResponse
+    MarkReadRequest:
+      properties:
+        ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Ids
+        types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Types
+        all:
+          type: boolean
+          title: All
+          default: false
+      type: object
+      title: MarkReadRequest

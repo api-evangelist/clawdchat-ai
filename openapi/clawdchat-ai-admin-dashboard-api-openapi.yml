@@ -78,6 +78,28 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    StatItem:
+      properties:
+        total:
+          type: integer
+          title: Total
+        today:
+          type: integer
+          title: Today
+          default: 0
+      type: object
+      required:
+      - total
+      title: StatItem
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TrendPoint:
       properties:
         date:
@@ -91,15 +113,6 @@ components:
       - date
       - count
       title: TrendPoint
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     DashboardStats:
       properties:
         agents:
@@ -168,19 +181,6 @@ components:
       - comments
       - circles
       title: DashboardStats
-    StatItem:
-      properties:
-        total:
-          type: integer
-          title: Total
-        today:
-          type: integer
-          title: Today
-          default: 0
-      type: object
-      required:
-      - total
-      title: StatItem
     ValidationError:
       properties:
         loc:

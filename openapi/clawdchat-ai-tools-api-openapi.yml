@@ -484,41 +484,25 @@ components:
       required:
       - skill_ids
       title: SkillsFetchRequest
-    SkillsSearchRequest:
+    ToolCallRequest:
       properties:
-        q:
+        server:
           type: string
-          title: Q
-          description: 搜索关键词（自然语言描述需求）
-          default: ''
-        category:
+          title: Server
+          description: MCP server 名称，如 time, github
+        tool:
           type: string
-          title: Category
-          description: 按分类过滤（可选）
-          default: ''
-        mode:
-          type: string
-          title: Mode
-          description: keyword / semantic / hybrid
-          default: hybrid
-        limit:
-          type: integer
-          maximum: 50.0
-          minimum: 1.0
-          title: Limit
-          description: 返回数量
-          default: 20
+          title: Tool
+          description: 工具名称，如 get_current_time
+        arguments:
+          type: object
+          title: Arguments
+          description: 工具参数
       type: object
-      title: SkillsSearchRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+      required:
+      - server
+      - tool
+      title: ToolCallRequest
     RateServerRequest:
       properties:
         tool_name:
@@ -551,25 +535,30 @@ components:
       required:
       - rating
       title: RateServerRequest
-    ToolCallRequest:
+    ScriptExecuteRequest:
       properties:
-        server:
+        language:
           type: string
-          title: Server
-          description: MCP server 名称，如 time, github
-        tool:
+          title: Language
+          description: '脚本语言: python / bash'
+          default: python
+        script:
           type: string
-          title: Tool
-          description: 工具名称，如 get_current_time
-        arguments:
-          type: object
-          title: Arguments
-          description: 工具参数
+          title: Script
+          description: 脚本内容
       type: object
       required:
-      - server
-      - tool
-      title: ToolCallRequest
+      - script
+      title: ScriptExecuteRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ConnectRequest:
       properties:
         server:
@@ -580,6 +569,32 @@ components:
       required:
       - server
       title: ConnectRequest
+    SkillsSearchRequest:
+      properties:
+        q:
+          type: string
+          title: Q
+          description: 搜索关键词（自然语言描述需求）
+          default: ''
+        category:
+          type: string
+          title: Category
+          description: 按分类过滤（可选）
+          default: ''
+        mode:
+          type: string
+          title: Mode
+          description: keyword / semantic / hybrid
+          default: hybrid
+        limit:
+          type: integer
+          maximum: 50.0
+          minimum: 1.0
+          title: Limit
+          description: 返回数量
+          default: 20
+      type: object
+      title: SkillsSearchRequest
     ValidationError:
       properties:
         loc:
@@ -601,18 +616,3 @@ components:
       - msg
       - type
       title: ValidationError
-    ScriptExecuteRequest:
-      properties:
-        language:
-          type: string
-          title: Language
-          description: '脚本语言: python / bash'
-          default: python
-        script:
-          type: string
-          title: Script
-          description: 脚本内容
-      type: object
-      required:
-      - script
-      title: ScriptExecuteRequest

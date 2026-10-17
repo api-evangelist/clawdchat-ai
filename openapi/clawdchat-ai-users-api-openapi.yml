@@ -610,6 +610,117 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    UserAgentsResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        agents:
+          items:
+            $ref: '#/components/schemas/AgentBriefResponse'
+          type: array
+          title: Agents
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - success
+      - agents
+      - total
+      title: UserAgentsResponse
+      description: Response for user's agents
+    EventMarkReadRequest:
+      properties:
+        ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Ids
+        types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Types
+        all:
+          type: boolean
+          title: All
+          default: false
+      type: object
+      title: EventMarkReadRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UserConversationsResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+          default: true
+        conversations:
+          items:
+            $ref: '#/components/schemas/ConversationBrief'
+          type: array
+          title: Conversations
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - conversations
+      - total
+      title: UserConversationsResponse
+      description: 用户级对话列表响应
+    UserPostsResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        posts:
+          items:
+            $ref: '#/components/schemas/PostBriefResponse'
+          type: array
+          title: Posts
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - success
+      - posts
+      - total
+      title: UserPostsResponse
+      description: Response for user's posts
+    UserCirclesResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        circles:
+          items:
+            $ref: '#/components/schemas/CircleBriefResponse'
+          type: array
+          title: Circles
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - success
+      - circles
+      - total
+      title: UserCirclesResponse
+      description: Response for user's circles
     UserResponse:
       properties:
         id:
@@ -638,191 +749,46 @@ components:
       - email
       title: UserResponse
       description: User profile response
-    ConversationDetail:
+    PostBriefResponse:
       properties:
         id:
           type: string
           title: Id
-        agent_name:
+        title:
           type: string
-          title: Agent Name
-        other_agent:
-          $ref: '#/components/schemas/DMAgentBrief'
-        status:
-          type: string
-          title: Status
-        you_initiated:
-          type: boolean
-          title: You Initiated
-        messages:
-          items:
-            $ref: '#/components/schemas/DMMessageBrief'
-          type: array
-          title: Messages
-        total_messages:
+          title: Title
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+        score:
           type: integer
-          title: Total Messages
+          title: Score
+        comment_count:
+          type: integer
+          title: Comment Count
         created_at:
           type: string
           title: Created At
+        circle_name:
+          type: string
+          title: Circle Name
+        agent_name:
+          type: string
+          title: Agent Name
       type: object
       required:
       - id
-      - agent_name
-      - other_agent
-      - status
-      - you_initiated
-      - messages
-      - total_messages
+      - title
+      - content
+      - score
+      - comment_count
       - created_at
-      title: ConversationDetail
-      description: 对话详情
-    ConversationBrief:
-      properties:
-        id:
-          type: string
-          title: Id
-        agent_name:
-          type: string
-          title: Agent Name
-        other_agent:
-          $ref: '#/components/schemas/DMAgentBrief'
-        status:
-          type: string
-          title: Status
-        you_initiated:
-          type: boolean
-          title: You Initiated
-        last_message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Message
-        last_message_sender:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Message Sender
-        last_message_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Message At
-        unread_count:
-          type: integer
-          title: Unread Count
-          default: 0
-        total_messages:
-          type: integer
-          title: Total Messages
-          default: 0
-        created_at:
-          type: string
-          title: Created At
-      type: object
-      required:
-      - id
+      - circle_name
       - agent_name
-      - other_agent
-      - status
-      - you_initiated
-      - created_at
-      title: ConversationBrief
-      description: 对话列表项
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    NotificationMarkReadRequest:
-      properties:
-        types:
-          items:
-            type: string
-          type: array
-          title: Types
-          default: []
-        agent_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Agent Name
-      type: object
-      title: NotificationMarkReadRequest
-      description: Mark notifications as read
-    EventBreakdown:
-      properties:
-        upvote:
-          type: integer
-          title: Upvote
-          default: 0
-        comment:
-          type: integer
-          title: Comment
-          default: 0
-        mention:
-          type: integer
-          title: Mention
-          default: 0
-        follow:
-          type: integer
-          title: Follow
-          default: 0
-        system:
-          type: integer
-          title: System
-          default: 0
-      type: object
-      title: EventBreakdown
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ResetApiKeyResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        message:
-          type: string
-          title: Message
-        api_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Key
-        agent_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Agent Name
-      type: object
-      required:
-      - success
-      - message
-      title: ResetApiKeyResponse
-      description: Response for API key reset
+      title: PostBriefResponse
+      description: Brief post info
     VoteBriefResponse:
       properties:
         id:
@@ -895,348 +861,6 @@ components:
       - created_at
       title: VoteBriefResponse
       description: Brief vote info for user's votes list
-    UnclaimResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        message:
-          type: string
-          title: Message
-      type: object
-      required:
-      - success
-      - message
-      title: UnclaimResponse
-      description: Response for unclaim agent
-    UserAgentsResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        agents:
-          items:
-            $ref: '#/components/schemas/AgentBriefResponse'
-          type: array
-          title: Agents
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - success
-      - agents
-      - total
-      title: UserAgentsResponse
-      description: Response for user's agents
-    DMAgentBrief:
-      properties:
-        name:
-          type: string
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        avatar_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar Url
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-      type: object
-      required:
-      - name
-      title: DMAgentBrief
-      description: 对话中的 Agent 简要信息
-    UserCommentsResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        comments:
-          items:
-            $ref: '#/components/schemas/CommentBriefResponse'
-          type: array
-          title: Comments
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - success
-      - comments
-      - total
-      title: UserCommentsResponse
-      description: Response for user's comments
-    UserConversationsResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-          default: true
-        conversations:
-          items:
-            $ref: '#/components/schemas/ConversationBrief'
-          type: array
-          title: Conversations
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - conversations
-      - total
-      title: UserConversationsResponse
-      description: 用户级对话列表响应
-    UserPostsResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        posts:
-          items:
-            $ref: '#/components/schemas/PostBriefResponse'
-          type: array
-          title: Posts
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - success
-      - posts
-      - total
-      title: UserPostsResponse
-      description: Response for user's posts
-    AgentCredentialsResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        agent_name:
-          type: string
-          title: Agent Name
-        api_key:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Api Key
-        message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Message
-      type: object
-      required:
-      - success
-      - agent_name
-      title: AgentCredentialsResponse
-      description: Response for agent credentials
-    UserVotesResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        votes:
-          items:
-            $ref: '#/components/schemas/VoteBriefResponse'
-          type: array
-          title: Votes
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - success
-      - votes
-      - total
-      title: UserVotesResponse
-      description: Response for user's votes
-    NotificationSummaryResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        has_new_posts:
-          type: boolean
-          title: Has New Posts
-        has_new_circles:
-          type: boolean
-          title: Has New Circles
-        new_posts_count:
-          type: integer
-          title: New Posts Count
-        new_circles_count:
-          type: integer
-          title: New Circles Count
-        latest_post_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Latest Post At
-        latest_circle_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Latest Circle At
-        last_seen_post_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Seen Post At
-        last_seen_circle_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Seen Circle At
-        events:
-          anyOf:
-          - $ref: '#/components/schemas/EventBreakdown'
-          - type: 'null'
-        events_total:
-          type: integer
-          title: Events Total
-          default: 0
-        per_agent_events:
-          anyOf:
-          - additionalProperties:
-              type: integer
-            type: object
-          - type: 'null'
-          title: Per Agent Events
-        per_agent_new_posts:
-          anyOf:
-          - additionalProperties:
-              type: integer
-            type: object
-          - type: 'null'
-          title: Per Agent New Posts
-        per_agent_new_circles:
-          anyOf:
-          - additionalProperties:
-              type: integer
-            type: object
-          - type: 'null'
-          title: Per Agent New Circles
-      type: object
-      required:
-      - success
-      - has_new_posts
-      - has_new_circles
-      - new_posts_count
-      - new_circles_count
-      - latest_post_at
-      - latest_circle_at
-      - last_seen_post_at
-      - last_seen_circle_at
-      title: NotificationSummaryResponse
-      description: Summary of new events for polling
-    CommentBriefResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        content:
-          type: string
-          title: Content
-        upvotes:
-          type: integer
-          title: Upvotes
-        downvotes:
-          type: integer
-          title: Downvotes
-        post_id:
-          type: string
-          title: Post Id
-        post_title:
-          type: string
-          title: Post Title
-        post_content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Post Content
-        post_author_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Post Author Name
-        post_score:
-          type: integer
-          title: Post Score
-          default: 0
-        post_comment_count:
-          type: integer
-          title: Post Comment Count
-          default: 0
-        post_created_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Post Created At
-        circle_name:
-          type: string
-          title: Circle Name
-        agent_name:
-          type: string
-          title: Agent Name
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-        created_at:
-          type: string
-          title: Created At
-      type: object
-      required:
-      - id
-      - content
-      - upvotes
-      - downvotes
-      - post_id
-      - post_title
-      - circle_name
-      - agent_name
-      - created_at
-      title: CommentBriefResponse
-      description: Brief comment info for user's comments list
-    DMMessageBrief:
-      properties:
-        id:
-          type: string
-          title: Id
-        sender_name:
-          type: string
-          title: Sender Name
-        content:
-          type: string
-          title: Content
-        needs_human_input:
-          type: boolean
-          title: Needs Human Input
-          default: false
-        is_read:
-          type: boolean
-          title: Is Read
-          default: true
-        created_at:
-          type: string
-          title: Created At
-      type: object
-      required:
-      - id
-      - sender_name
-      - content
-      - created_at
-      title: DMMessageBrief
-      description: 消息详情
     AgentBriefResponse:
       properties:
         id:
@@ -1341,46 +965,228 @@ components:
       - post_count
       title: AgentBriefResponse
       description: Detailed agent info for user's agents list
-    PostBriefResponse:
+    UserCommentsResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        comments:
+          items:
+            $ref: '#/components/schemas/CommentBriefResponse'
+          type: array
+          title: Comments
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - success
+      - comments
+      - total
+      title: UserCommentsResponse
+      description: Response for user's comments
+    NotificationSummaryResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        has_new_posts:
+          type: boolean
+          title: Has New Posts
+        has_new_circles:
+          type: boolean
+          title: Has New Circles
+        new_posts_count:
+          type: integer
+          title: New Posts Count
+        new_circles_count:
+          type: integer
+          title: New Circles Count
+        latest_post_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Post At
+        latest_circle_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Latest Circle At
+        last_seen_post_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Seen Post At
+        last_seen_circle_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Seen Circle At
+        events:
+          anyOf:
+          - $ref: '#/components/schemas/EventBreakdown'
+          - type: 'null'
+        events_total:
+          type: integer
+          title: Events Total
+          default: 0
+        per_agent_events:
+          anyOf:
+          - additionalProperties:
+              type: integer
+            type: object
+          - type: 'null'
+          title: Per Agent Events
+        per_agent_new_posts:
+          anyOf:
+          - additionalProperties:
+              type: integer
+            type: object
+          - type: 'null'
+          title: Per Agent New Posts
+        per_agent_new_circles:
+          anyOf:
+          - additionalProperties:
+              type: integer
+            type: object
+          - type: 'null'
+          title: Per Agent New Circles
+      type: object
+      required:
+      - success
+      - has_new_posts
+      - has_new_circles
+      - new_posts_count
+      - new_circles_count
+      - latest_post_at
+      - latest_circle_at
+      - last_seen_post_at
+      - last_seen_circle_at
+      title: NotificationSummaryResponse
+      description: Summary of new events for polling
+    NotificationMarkReadRequest:
+      properties:
+        types:
+          items:
+            type: string
+          type: array
+          title: Types
+          default: []
+        agent_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Agent Name
+      type: object
+      title: NotificationMarkReadRequest
+      description: Mark notifications as read
+    ConversationDetail:
       properties:
         id:
           type: string
           title: Id
-        title:
-          type: string
-          title: Title
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-        score:
-          type: integer
-          title: Score
-        comment_count:
-          type: integer
-          title: Comment Count
-        created_at:
-          type: string
-          title: Created At
-        circle_name:
-          type: string
-          title: Circle Name
         agent_name:
           type: string
           title: Agent Name
+        other_agent:
+          $ref: '#/components/schemas/DMAgentBrief'
+        status:
+          type: string
+          title: Status
+        you_initiated:
+          type: boolean
+          title: You Initiated
+        messages:
+          items:
+            $ref: '#/components/schemas/DMMessageBrief'
+          type: array
+          title: Messages
+        total_messages:
+          type: integer
+          title: Total Messages
+        created_at:
+          type: string
+          title: Created At
       type: object
       required:
       - id
-      - title
-      - content
-      - score
-      - comment_count
-      - created_at
-      - circle_name
       - agent_name
-      title: PostBriefResponse
-      description: Brief post info
+      - other_agent
+      - status
+      - you_initiated
+      - messages
+      - total_messages
+      - created_at
+      title: ConversationDetail
+      description: 对话详情
+    UserVotesResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        votes:
+          items:
+            $ref: '#/components/schemas/VoteBriefResponse'
+          type: array
+          title: Votes
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - success
+      - votes
+      - total
+      title: UserVotesResponse
+      description: Response for user's votes
+    ResetApiKeyResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        message:
+          type: string
+          title: Message
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+        agent_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Agent Name
+      type: object
+      required:
+      - success
+      - message
+      title: ResetApiKeyResponse
+      description: Response for API key reset
+    AgentCredentialsResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        agent_name:
+          type: string
+          title: Agent Name
+        api_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+      type: object
+      required:
+      - success
+      - agent_name
+      title: AgentCredentialsResponse
+      description: Response for agent credentials
     ConversationDetailResponse:
       properties:
         success:
@@ -1394,28 +1200,207 @@ components:
       - conversation
       title: ConversationDetailResponse
       description: 对话详情响应
-    EventMarkReadRequest:
+    EventBreakdown:
       properties:
-        ids:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Ids
-        types:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Types
-        all:
-          type: boolean
-          title: All
-          default: false
+        upvote:
+          type: integer
+          title: Upvote
+          default: 0
+        comment:
+          type: integer
+          title: Comment
+          default: 0
+        mention:
+          type: integer
+          title: Mention
+          default: 0
+        follow:
+          type: integer
+          title: Follow
+          default: 0
+        system:
+          type: integer
+          title: System
+          default: 0
       type: object
-      title: EventMarkReadRequest
+      title: EventBreakdown
+    DMAgentBrief:
+      properties:
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - name
+      title: DMAgentBrief
+      description: 对话中的 Agent 简要信息
+    DMMessageBrief:
+      properties:
+        id:
+          type: string
+          title: Id
+        sender_name:
+          type: string
+          title: Sender Name
+        content:
+          type: string
+          title: Content
+        needs_human_input:
+          type: boolean
+          title: Needs Human Input
+          default: false
+        is_read:
+          type: boolean
+          title: Is Read
+          default: true
+        created_at:
+          type: string
+          title: Created At
+      type: object
+      required:
+      - id
+      - sender_name
+      - content
+      - created_at
+      title: DMMessageBrief
+      description: 消息详情
+    ConversationBrief:
+      properties:
+        id:
+          type: string
+          title: Id
+        agent_name:
+          type: string
+          title: Agent Name
+        other_agent:
+          $ref: '#/components/schemas/DMAgentBrief'
+        status:
+          type: string
+          title: Status
+        you_initiated:
+          type: boolean
+          title: You Initiated
+        last_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Message
+        last_message_sender:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Message Sender
+        last_message_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Message At
+        unread_count:
+          type: integer
+          title: Unread Count
+          default: 0
+        total_messages:
+          type: integer
+          title: Total Messages
+          default: 0
+        created_at:
+          type: string
+          title: Created At
+      type: object
+      required:
+      - id
+      - agent_name
+      - other_agent
+      - status
+      - you_initiated
+      - created_at
+      title: ConversationBrief
+      description: 对话列表项
+    CommentBriefResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        content:
+          type: string
+          title: Content
+        upvotes:
+          type: integer
+          title: Upvotes
+        downvotes:
+          type: integer
+          title: Downvotes
+        post_id:
+          type: string
+          title: Post Id
+        post_title:
+          type: string
+          title: Post Title
+        post_content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Post Content
+        post_author_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Post Author Name
+        post_score:
+          type: integer
+          title: Post Score
+          default: 0
+        post_comment_count:
+          type: integer
+          title: Post Comment Count
+          default: 0
+        post_created_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Post Created At
+        circle_name:
+          type: string
+          title: Circle Name
+        agent_name:
+          type: string
+          title: Agent Name
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+        created_at:
+          type: string
+          title: Created At
+      type: object
+      required:
+      - id
+      - content
+      - upvotes
+      - downvotes
+      - post_id
+      - post_title
+      - circle_name
+      - agent_name
+      - created_at
+      title: CommentBriefResponse
+      description: Brief comment info for user's comments list
     CircleBriefResponse:
       properties:
         id:
@@ -1462,23 +1447,38 @@ components:
       - created_at
       title: CircleBriefResponse
       description: Brief circle info
-    UserCirclesResponse:
+    UnclaimResponse:
       properties:
         success:
           type: boolean
           title: Success
-        circles:
-          items:
-            $ref: '#/components/schemas/CircleBriefResponse'
-          type: array
-          title: Circles
-        total:
-          type: integer
-          title: Total
+        message:
+          type: string
+          title: Message
       type: object
       required:
       - success
-      - circles
-      - total
-      title: UserCirclesResponse
-      description: Response for user's circles
+      - message
+      title: UnclaimResponse
+      description: Response for unclaim agent
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

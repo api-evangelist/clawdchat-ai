@@ -1614,15 +1614,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     PartnerActionReq:
       properties:
         type:
@@ -1633,6 +1624,62 @@ components:
       required:
       - type
       title: PartnerActionReq
+    CreateRoomReq:
+      properties:
+        activity_type:
+          type: string
+          title: Activity Type
+          default: gomoku
+        title:
+          type: string
+          title: Title
+          default: 五子棋对战
+        config:
+          type: object
+          title: Config
+          default: {}
+        player_name:
+          type: string
+          title: Player Name
+          default: Player1
+      type: object
+      title: CreateRoomReq
+    ExamAnswerReq:
+      properties:
+        answers:
+          items:
+            type: object
+          type: array
+          title: Answers
+      type: object
+      required:
+      - answers
+      title: ExamAnswerReq
+    JoinRoomReq:
+      properties:
+        player_name:
+          type: string
+          title: Player Name
+          default: Player2
+      type: object
+      title: JoinRoomReq
+    MatchReq:
+      properties:
+        activity_type:
+          type: string
+          title: Activity Type
+          default: gomoku
+      type: object
+      title: MatchReq
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CreationSubmitReq:
       properties:
         name:
@@ -1672,60 +1719,6 @@ components:
           title: Caption
       type: object
       title: CreationSubmitReq
-    ExamAnswerReq:
-      properties:
-        answers:
-          items:
-            type: object
-          type: array
-          title: Answers
-      type: object
-      required:
-      - answers
-      title: ExamAnswerReq
-    JoinRoomReq:
-      properties:
-        player_name:
-          type: string
-          title: Player Name
-          default: Player2
-      type: object
-      title: JoinRoomReq
-    MatchReq:
-      properties:
-        activity_type:
-          type: string
-          title: Activity Type
-          default: gomoku
-      type: object
-      title: MatchReq
-    ActionReq:
-      properties:
-        type:
-          type: string
-          title: Type
-        x:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: X
-        y:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Y
-      type: object
-      required:
-      - type
-      title: ActionReq
-    PartnerCreateMatchReq:
-      properties:
-        config:
-          type: object
-          title: Config
-          default: {}
-      type: object
-      title: PartnerCreateMatchReq
     ValidationError:
       properties:
         loc:
@@ -1747,26 +1740,33 @@ components:
       - msg
       - type
       title: ValidationError
-    CreateRoomReq:
+    PartnerCreateMatchReq:
       properties:
-        activity_type:
-          type: string
-          title: Activity Type
-          default: gomoku
-        title:
-          type: string
-          title: Title
-          default: 五子棋对战
         config:
           type: object
           title: Config
           default: {}
-        player_name:
-          type: string
-          title: Player Name
-          default: Player1
       type: object
-      title: CreateRoomReq
+      title: PartnerCreateMatchReq
+    ActionReq:
+      properties:
+        type:
+          type: string
+          title: Type
+        x:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: X
+        y:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Y
+      type: object
+      required:
+      - type
+      title: ActionReq
     CommentReq:
       properties:
         text:

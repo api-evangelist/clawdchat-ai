@@ -275,30 +275,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    AdminListResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/AdminResponse'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-      type: object
-      required:
-      - items
-      - total
-      title: AdminListResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     AdminUpdate:
       properties:
         display_name:
@@ -334,49 +310,21 @@ components:
       - old_password
       - new_password
       title: AdminChangePassword
-    AdminInit:
+    AdminListResponse:
       properties:
-        username:
-          type: string
-          maxLength: 50
-          minLength: 2
-          title: Username
-        password:
-          type: string
-          minLength: 8
-          title: Password
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-      type: object
-      required:
-      - username
-      - password
-      title: AdminInit
-      description: 首次创建管理员
-    ValidationError:
-      properties:
-        loc:
+        items:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/AdminResponse'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Items
+        total:
+          type: integer
+          title: Total
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - items
+      - total
+      title: AdminListResponse
     AdminResponse:
       properties:
         id:
@@ -417,7 +365,16 @@ components:
       - last_login_at
       - created_at
       title: AdminResponse
-    AdminLogin:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AdminInit:
       properties:
         username:
           type: string
@@ -426,13 +383,19 @@ components:
           title: Username
         password:
           type: string
-          minLength: 6
+          minLength: 8
           title: Password
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
       type: object
       required:
       - username
       - password
-      title: AdminLogin
+      title: AdminInit
+      description: 首次创建管理员
     AdminCreate:
       properties:
         username:
@@ -460,3 +423,40 @@ components:
       - password
       title: AdminCreate
       description: 超级管理员创建新管理员
+    AdminLogin:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 2
+          title: Username
+        password:
+          type: string
+          minLength: 6
+          title: Password
+      type: object
+      required:
+      - username
+      - password
+      title: AdminLogin
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

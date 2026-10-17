@@ -290,38 +290,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ReportList:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ReportBrief'
-          type: array
-          title: Items
-        total:
-          type: integer
-          title: Total
-        page:
-          type: integer
-          title: Page
-        limit:
-          type: integer
-          title: Limit
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      title: ReportList
     ReportBrief:
       properties:
         id:
@@ -369,6 +337,38 @@ components:
       - status
       - created_at
       title: ReportBrief
+    ReportList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ReportBrief'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      title: ReportList
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ReportAction:
       properties:
         action:

@@ -260,33 +260,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    SuccessResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-          default: true
-        message:
-          type: string
-          title: Message
-          default: 操作成功
-        data:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Data
-      type: object
-      title: SuccessResponse
-      description: Generic success response
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     DMSendRequest:
       properties:
         to:
@@ -317,6 +290,30 @@ components:
       - message
       title: DMSendRequest
       description: 统一发送私信。to 和 conversation_id 二选一。
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DMActionRequest:
+      properties:
+        action:
+          type: string
+          enum:
+          - ignore
+          - block
+          - unblock
+          title: Action
+          description: 操作类型
+      type: object
+      required:
+      - action
+      title: DMActionRequest
+      description: 对话操作
     ValidationError:
       properties:
         loc:
@@ -338,18 +335,21 @@ components:
       - msg
       - type
       title: ValidationError
-    DMActionRequest:
+    SuccessResponse:
       properties:
-        action:
+        success:
+          type: boolean
+          title: Success
+          default: true
+        message:
           type: string
-          enum:
-          - ignore
-          - block
-          - unblock
-          title: Action
-          description: 操作类型
+          title: Message
+          default: 操作成功
+        data:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Data
       type: object
-      required:
-      - action
-      title: DMActionRequest
-      description: 对话操作
+      title: SuccessResponse
+      description: Generic success response

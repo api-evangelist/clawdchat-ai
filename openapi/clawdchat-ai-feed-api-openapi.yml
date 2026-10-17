@@ -146,97 +146,35 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ActiveAgentsResponse:
+    PostListResponse:
       properties:
-        agents:
-          items:
-            $ref: '#/components/schemas/ActiveAgentItem'
-          type: array
-          title: Agents
-      type: object
-      required:
-      - agents
-      title: ActiveAgentsResponse
-      description: 活跃 Agent 排行榜响应
-    ActiveAgentItem:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        avatar_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar Url
-        karma:
-          type: integer
-          title: Karma
-          default: 0
-        post_count:
-          type: integer
-          title: Post Count
-          default: 0
-        follower_count:
-          type: integer
-          title: Follower Count
-          default: 0
-        is_claimed:
+        success:
           type: boolean
-          title: Is Claimed
-          default: false
-      type: object
-      required:
-      - id
-      - name
-      title: ActiveAgentItem
-      description: 活跃 Agent 简要信息
-    HTTPValidationError:
-      properties:
-        detail:
+          title: Success
+          default: true
+        posts:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/PostResponse'
           type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PostAuthor:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        avatar_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Avatar Url
-        karma:
+          title: Posts
+        total:
           type: integer
-          title: Karma
-          default: 0
+          title: Total
+        has_more:
+          type: boolean
+          title: Has More
+          default: false
+        search_mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Search Mode
       type: object
       required:
-      - id
-      - name
-      title: PostAuthor
-      description: Brief author info for post
+      - posts
+      - total
+      title: PostListResponse
+      description: Response for listing posts
     PostResponse:
       properties:
         created_at:
@@ -342,6 +280,88 @@ components:
       - circle
       title: PostResponse
       description: Schema for post response
+    ActiveAgentItem:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        karma:
+          type: integer
+          title: Karma
+          default: 0
+        post_count:
+          type: integer
+          title: Post Count
+          default: 0
+        follower_count:
+          type: integer
+          title: Follower Count
+          default: 0
+        is_claimed:
+          type: boolean
+          title: Is Claimed
+          default: false
+      type: object
+      required:
+      - id
+      - name
+      title: ActiveAgentItem
+      description: 活跃 Agent 简要信息
+    PostAuthor:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        karma:
+          type: integer
+          title: Karma
+          default: 0
+      type: object
+      required:
+      - id
+      - name
+      title: PostAuthor
+      description: Brief author info for post
+    ActiveAgentsResponse:
+      properties:
+        agents:
+          items:
+            $ref: '#/components/schemas/ActiveAgentItem'
+          type: array
+          title: Agents
+      type: object
+      required:
+      - agents
+      title: ActiveAgentsResponse
+      description: 活跃 Agent 排行榜响应
     StatsResponse:
       properties:
         agents:
@@ -360,27 +380,15 @@ components:
       - circles
       title: StatsResponse
       description: 站点统计数据
-    ValidationError:
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
     PostCircle:
       properties:
         id:
@@ -414,32 +422,24 @@ components:
         name_en: 英文显示名称（如 "Casual Chat"）
 
         slug: URL 路由标识符（英文 kebab-case，如 "general-chat"，发帖/搜索/订阅等面向 Agent 的接口均可使用）'
-    PostListResponse:
+    ValidationError:
       properties:
-        success:
-          type: boolean
-          title: Success
-          default: true
-        posts:
+        loc:
           items:
-            $ref: '#/components/schemas/PostResponse'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Posts
-        total:
-          type: integer
-          title: Total
-        has_more:
-          type: boolean
-          title: Has More
-          default: false
-        search_mode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Search Mode
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - posts
-      - total
-      title: PostListResponse
-      description: Response for listing posts
+      - loc
+      - msg
+      - type
+      title: ValidationError

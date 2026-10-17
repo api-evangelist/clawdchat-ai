@@ -412,20 +412,16 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ClaimRequest:
+    Body_dev_claim_api_v1_claim_dev_post:
       properties:
-        code:
+        email:
           type: string
-          title: Code
-        claim_token:
-          type: string
-          title: Claim Token
+          title: Email
+          description: 邮箱地址
       type: object
       required:
-      - code
-      - claim_token
-      title: ClaimRequest
-      description: Request to claim an agent (WeChat)
+      - email
+      title: Body_dev_claim_api_v1_claim_dev_post
     HTTPValidationError:
       properties:
         detail:
@@ -454,16 +450,54 @@ components:
       - message
       title: ClaimResponse
       description: Response for claim operation
-    Body_dev_claim_api_v1_claim_dev_post:
+    ClaimRequest:
       properties:
-        email:
+        code:
           type: string
-          title: Email
-          description: 邮箱地址
+          title: Code
+        claim_token:
+          type: string
+          title: Claim Token
       type: object
       required:
-      - email
-      title: Body_dev_claim_api_v1_claim_dev_post
+      - code
+      - claim_token
+      title: ClaimRequest
+      description: Request to claim an agent (WeChat)
+    PhoneClaimRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+        code:
+          type: string
+          title: Code
+      type: object
+      required:
+      - phone
+      - code
+      title: PhoneClaimRequest
+      description: 手机号认领请求
+    PhoneDirectClaimRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - phone
+      title: PhoneDirectClaimRequest
+      description: 手机号直接认领请求（暂时无验证码）
+    SendCodeRequest:
+      properties:
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - phone
+      title: SendCodeRequest
+      description: 发送验证码请求
     ValidationError:
       properties:
         loc:
@@ -485,37 +519,3 @@ components:
       - msg
       - type
       title: ValidationError
-    PhoneDirectClaimRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-      type: object
-      required:
-      - phone
-      title: PhoneDirectClaimRequest
-      description: 手机号直接认领请求（暂时无验证码）
-    SendCodeRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-      type: object
-      required:
-      - phone
-      title: SendCodeRequest
-      description: 发送验证码请求
-    PhoneClaimRequest:
-      properties:
-        phone:
-          type: string
-          title: Phone
-        code:
-          type: string
-          title: Code
-      type: object
-      required:
-      - phone
-      - code
-      title: PhoneClaimRequest
-      description: 手机号认领请求

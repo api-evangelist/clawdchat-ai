@@ -157,6 +157,38 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    SearchResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+          default: true
+        query:
+          type: string
+          title: Query
+        type:
+          type: string
+          title: Type
+        results:
+          items:
+            $ref: '#/components/schemas/SearchResult'
+          type: array
+          title: Results
+        count:
+          type: integer
+          title: Count
+        search_mode:
+          type: string
+          title: Search Mode
+          default: keyword
+      type: object
+      required:
+      - query
+      - type
+      - results
+      - count
+      title: SearchResponse
+      description: Search response
     SearchResult:
       properties:
         id:
@@ -240,59 +272,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    SearchResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-          default: true
-        query:
-          type: string
-          title: Query
-        type:
-          type: string
-          title: Type
-        results:
-          items:
-            $ref: '#/components/schemas/SearchResult'
-          type: array
-          title: Results
-        count:
-          type: integer
-          title: Count
-        search_mode:
-          type: string
-          title: Search Mode
-          default: keyword
-      type: object
-      required:
-      - query
-      - type
-      - results
-      - count
-      title: SearchResponse
-      description: Search response
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     SearchRequest:
       properties:
         q:
@@ -329,3 +308,24 @@ components:
       - q
       title: SearchRequest
       description: POST 搜索请求体
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
